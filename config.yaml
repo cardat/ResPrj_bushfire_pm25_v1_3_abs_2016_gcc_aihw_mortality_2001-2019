@@ -1,0 +1,8 @@
+## set the directory ## 
+indir_aihw: "C:/Users/291828h/OneDrive - Curtin/projects/ResPrj_bushfire_pm25_aihw_mortality_2001-2019/data_provided/aihw_mortality_2000-2019"
+indir_pm25: "C:/Users/291828h/OneDrive - Curtin/projects/ResPrj_bushfire_pm25_aihw_mortality_2001-2019/data_provided/bushfire_pm25_2001-2019_abs_2016"
+
+## set the data assets ##
+# daily mortality all causes #
+dly_all_gcc: "GCC_daily_deaths_allcause_derived.csv"
+# bushfire smoke with ABS SA1s of the 2016 census #
