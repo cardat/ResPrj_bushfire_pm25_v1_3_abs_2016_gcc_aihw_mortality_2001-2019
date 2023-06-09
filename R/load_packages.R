@@ -3,7 +3,8 @@ load_packages <- function(do_it = T){
             "yaml",
             "data.table",
             "dplyr",
-            "sf")
+            "sf",
+            "sp")
   ipak <- function(pkg){
     new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
     if (length(new.pkg)) 
