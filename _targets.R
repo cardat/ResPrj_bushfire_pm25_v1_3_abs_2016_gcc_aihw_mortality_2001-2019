@@ -6,9 +6,8 @@ list(
   tar_target(
     dat_mort_aihw,
     load_mort_aihw(
-      indir,
-      indat,
-      name = "dat_mort_aihw"
+      dir,
+      dat
     )
   )
   ,
@@ -16,9 +15,8 @@ list(
   tar_target(
     dat_bushfire_pm25,
     load_bushfire_pm25(
-      indir,
-      indat,
-      name = "dat_bushfire_pm25"
+      dir,
+      dat
     )
   )
   ,
@@ -56,10 +54,10 @@ list(
   tar_target(
     att_number,
     do_att_number(
-      hif = health_impact,
+      health_impact,
       pop_weighted_exp
     )
   )
   ### Figures, maps, and tables ####
-  
+
 )
