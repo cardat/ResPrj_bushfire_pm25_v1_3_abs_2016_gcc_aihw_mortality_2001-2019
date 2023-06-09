@@ -3,7 +3,7 @@
 #' @param dir 
 #'
 #' @return merged_list
-#' @export
+#' @export bushfire_pm25_2001-2019_stl.rds
 #'
 #' @examples
 
@@ -26,12 +26,12 @@ load_bushfire_pm25 <- function(
     stl[[year]] <- readRDS(file)  
   }
   
-  # Initialize empty lists for seasonal, trend, and remainder
+  # Create empty lists for seasonal, trend, and remainder
   seasonal_list <- list()
   trend_list <- list()
   remainder_list <- list()
   
-  # Iterate over each year from 2001 to 2019
+  # Iterate over each year
   for (year in 2001:2019) {
     # Extract the sublist for the current year
     current_year_list <- stl[[as.character(year)]]
@@ -57,7 +57,6 @@ load_bushfire_pm25 <- function(
     # Save the merged data into a single file
     saveRDS(merged_list, file = file.path(config$outdir_pm25, 
                                           config$outdat_pm25))
-
     # Return the merged file object
     return(merged_list)
   }
