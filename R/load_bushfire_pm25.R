@@ -31,20 +31,34 @@ load_bushfire_pm25 <- function(
   trend_list <- list()
   remainder_list <- list()
   
+  # Vector with GCCs
+  gcc_codes <- c("1GSYD", 
+                 "2GMEL", 
+                 "3GBRI", 
+                 "4GADE", 
+                 "5GPER", 
+                 "6GHOB", 
+                 "7GDAR", 
+                 "8ACTE")
+  
   # Iterate over each year
-  for (year in 2001:2019) {
+  for (year in 2001:2002) {
     # Extract the sublist for the current year
     current_year_list <- stl[[as.character(year)]]
     
-    # Extract the seasonal, trend, and remainder spatial objects from the current sublist
     current_seasonal <- current_year_list$seasonal
     current_trend <- current_year_list$trend
     current_remainder <- current_year_list$remainder
     
+    # Filter by gcc_code16
+    filtered_seasonal <- current_seasonal[current_seasonal$gcc_code16 %in% gcc_codes, ]
+    filtered_trend <- current_trend[current_trend$gcc_code16 %in% gcc_codes, ]
+    filtered_remainder <- current_remainder[current_remainder$gcc_code16 %in% gcc_codes, ]
+    
     # Append the spatial objects to their respective lists
-    seasonal_list <- c(seasonal_list, current_seasonal)
-    trend_list <- c(trend_list, current_trend)
-    remainder_list <- c(remainder_list, current_remainder)
+    seasonal_list <- c(seasonal_list, filtered_seasonal)
+    trend_list <- c(trend_list, filtered_trend)
+    remainder_list <- c(remainder_list, filtered_remainder)
   }
   
   # Create a merged list with the combined spatial objects
