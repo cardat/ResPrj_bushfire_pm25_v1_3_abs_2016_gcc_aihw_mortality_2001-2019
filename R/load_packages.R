@@ -4,7 +4,8 @@ load_packages <- function(do_it = T){
             "data.table",
             "dplyr",
             "sf",
-            "sp")
+            "sp",
+            "tidyr")
   ipak <- function(pkg){
     new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
     if (length(new.pkg)) 

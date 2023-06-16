@@ -42,7 +42,7 @@ load_bushfire_pm25 <- function(
                  "8ACTE")
   
   # Iterate over each year
-  for (year in 2001:2002) {
+  for (year in 2001:2019) {
     # Extract the sublist for the current year
     current_year_list <- stl[[as.character(year)]]
     

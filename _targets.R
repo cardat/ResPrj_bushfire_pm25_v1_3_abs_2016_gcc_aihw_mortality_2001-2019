@@ -58,6 +58,21 @@ list(
       pop_weighted_exp
     )
   )
+  ,
   ### Figures, maps, and tables ####
-
+  #### plot_mortality_gcc ####
+  tar_target(
+    plot_mortality_gcc,
+    do_plot_mortality_gcc(
+      dat_mort_aihw
+    )
+  )
+  ,
+  #### plot_mortality_gcc ####
+  tar_target(
+    plot_mortality_all,
+    do_plot_mortality_all(
+      dat_mort_aihw
+    )
+  )
 )
