@@ -4,8 +4,6 @@ load_mort_aihw <- function(
 ){
   dly_gcc <- read.csv(file = file.path(config$indir_aihw, config$dly_all_gcc))
   
-  library(lubridate)
-
   dly_gcc <- as.data.table(dly_gcc)
   obs <- dly_gcc[, .(all = sum(deaths[age == "All ages"]),
                      all_0_64 = sum(deaths[age == "Under 65 years"]),
@@ -20,6 +18,9 @@ load_mort_aihw <- function(
   
   # Create new columns year, month, and day
   obs[, c("year", "month", "day") := .(year(date), month(date), day(date))]
+  
+  # Create new column all_sum_gccs_dly
+  obs[, all_sum_gccs_dly := sum(all), by = .(date)]
   
   # Create new column doy (day of the year)
   obs[, doy := yday(date)]
