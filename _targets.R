@@ -14,7 +14,7 @@ tar_option_set(
 )
 
 list(
-  ### Load data ####
+  ### LOAD DATA ####
   #### dat_mort_aihw ####
   tar_target(
     dat_mort_aihw,
@@ -31,14 +31,13 @@ list(
     )
   )
   # ,
-  # ### Analysis ####
+  # ### ANALYSIS ####
   # 
   # #### counterfactual - min pm25 ####
   # tar_target(
   #   counterfactual,
   #   do_counterfactual(
-  #     dat_bushfire_pm25,
-  #     "min"
+  #     dat_bushfire_pm25
   #   )
   # )
   # ,
@@ -70,7 +69,7 @@ list(
   #   )
   # )
   # ,
-  # ### Figures, maps, and tables ####
+  # ### OUTPUTS ####
   # #### plot_mortality_gcc ####
   # tar_target(
   #   plot_mortality_gcc,
