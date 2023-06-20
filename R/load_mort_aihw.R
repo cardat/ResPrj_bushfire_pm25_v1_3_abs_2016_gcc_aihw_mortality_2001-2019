@@ -1,6 +1,5 @@
 load_mort_aihw <- function(
-    dir,
-    dat
+    dir
 ){
   dly_gcc <- read.csv(file = file.path(config$indir_aihw, config$dly_all_gcc))
   

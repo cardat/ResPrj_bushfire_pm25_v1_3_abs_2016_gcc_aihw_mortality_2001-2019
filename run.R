@@ -1,4 +1,5 @@
 library(targets)
+lapply(list.files("R", full.names = TRUE), source)
 tar_source()
 load_packages(T)
 config <- yaml::read_yaml("config.yaml")
