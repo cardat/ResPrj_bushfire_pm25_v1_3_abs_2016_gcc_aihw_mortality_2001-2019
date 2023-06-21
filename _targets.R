@@ -30,23 +30,22 @@ list(
       dir
     )
   )
+  ,
+  ### ANALYSIS ####
+  #### set_counterfactual ####
+  tar_target(
+    set_counterfactual,
+    do_counterfactual(
+      dat_bushfire_pm25
+    )
+  )
   # ,
-  # ### ANALYSIS ####
-  # 
-  # #### counterfactual - min pm25 ####
+  # #### pop_weighted_avg_exp ####
   # tar_target(
-  #   counterfactual,
-  #   do_counterfactual(
-  #     dat_bushfire_pm25
-  #   )
-  # )
-  # ,
-  # #### pop weighting pm25 and counter ####
-  # tar_target(
-  #   pop_weighted_exp,
-  #   do_pop_weighted_exp(
-  #     dat_mort_aihw,
-  #     counterfactual
+  #   pop_weighted_avg_exp,
+  #   do_pop_weighted_avg_exp(
+  #     set_counterfactual,
+  #     dat_mort_aihw
   #   )
   # )
   # ,

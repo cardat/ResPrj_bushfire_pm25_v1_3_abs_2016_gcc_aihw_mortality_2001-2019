@@ -41,7 +41,7 @@ load_mort_aihw <- function(
     "all_65plus"), 
     with = FALSE]
   
-  # Filter out rows with year equal to 2000
+  # Filter out rows with year equal to 2000 & 2001
   obs <- obs[year != 2000 & year != 2001]
   
   return(obs)
