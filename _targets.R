@@ -9,7 +9,8 @@ tar_option_set(
       "dplyr",
       "sf",
       "sp",
-      "lubridate"
+      "lubridate",
+      "Hmisc"
     )
 )
 
@@ -39,7 +40,7 @@ list(
       dat_bushfire_pm25
     )
   )
-  # ,
+  ,
   # #### pop_weighted_avg_exp ####
   # tar_target(
   #   pop_weighted_avg_exp,
@@ -68,16 +69,16 @@ list(
   #   )
   # )
   # ,
-  # ### OUTPUTS ####
-  # #### plot_mortality_gcc ####
-  # tar_target(
-  #   plot_mortality_gcc,
-  #   do_plot_mortality_gcc(
-  #     dat_mort_aihw
-  #   )
-  # )
+  ### OUTPUTS ####
+  #### plot_mortality_gcc ####
+  tar_target(
+    plot_mortality_gcc,
+    do_plot_mortality_gcc(
+      dat_mort_aihw
+    )
+  )
   # ,
-  # #### plot_mortality_gcc ####
+  # #### plot_mortality_all ####
   # tar_target(
   #   plot_mortality_all,
   #   do_plot_mortality_all(

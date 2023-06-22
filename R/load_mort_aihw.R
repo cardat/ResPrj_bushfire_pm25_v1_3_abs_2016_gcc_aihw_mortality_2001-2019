@@ -27,6 +27,21 @@ load_mort_aihw <- function(
   # Create new column dow (day of the week)
   obs[, dow := substr(weekdays(date), 1, 3)]
   
+  # Filter out rows with year equal to 2000 & 2001
+  obs <- obs[year != 2000 & year != 2001]
+  
+  # Calculate the group number for every three-year period
+  obs[, group := ((year - 2002) %/% 3) + 1]
+  
+  # Calculate the average of 'all' for each doy, group, and gcc combination
+  obs[, avg_doy_all := round(mean(all), 3), by = .(doy, group, gcc)]
+  
+  obs[, avg_doy_all_0_64 := round(mean(all_0_64), 3), by = .(doy, group, gcc)]
+  
+  obs[, avg_doy_all_65plus := round(mean(all_65plus), 3), by = .(doy, group, gcc)]
+  
+  obs[, group := NULL]
+  
   # Reorder the columns
   obs <- obs[, c(
     "gcc",
@@ -38,11 +53,12 @@ load_mort_aihw <- function(
     "dow", 
     "all", 
     "all_0_64", 
-    "all_65plus"), 
+    "all_65plus",
+    "avg_doy_all",
+    "avg_doy_all_0_64",
+    "avg_doy_all_65plus"), 
     with = FALSE]
   
-  # Filter out rows with year equal to 2000 & 2001
-  obs <- obs[year != 2000 & year != 2001]
-  
+
   return(obs)
 }
