@@ -1,79 +1,95 @@
-# Convert the 'date' column to a Date object if it's not already in that format
-obs$date <- as.Date(obs$date)
+#' Simulated AIHW 2020 mortality daily averages by day of the year
+#' 
+#' This function simulates 2020 daily all cause mortality averages based on 2019 
+#' values which are the daily means estimated from three year chunks - 2019, 
+#' 2018 and 2017.
+#' 
+#' @param obs 
+#'
+#' @return sim_obs
+#' @export
+#'
+#' @examples
 
-# Find the last date in the 'date' column
-last_date <- max(obs$date)
+do_simulate_aihw_2020 <- function(
+    obs
+){
+  
+# Define the list of "gcc" values
+gcc_list <- c("1GSYD", 
+              "2GMEL", 
+              "3GBRI", 
+              "4GADE", 
+              "5GPER", 
+              "6GHOB", 
+              "7GDAR", 
+              "8ACTE")
 
-# Generate a sequence of dates from December 28, 2019, to December 31, 2020
-extended_dates <- seq(from = as.Date("2019-12-28"), to = as.Date("2020-12-31"), by = "day")
+# Create an empty list to store the results for each "gcc"
+merged_list <- list()
 
-# Repeat each extended date eight times
-extended_dates_rep <- rep(extended_dates, each = 8)
+# Iterate over each "gcc" value
+for (gcc_value in gcc_list) {
+  # Subset the "obs" data for the current "gcc" value
+  gcc_obs <- obs[gcc == gcc_value]
+  
+  # Create the date sequence from 2019-12-28 for each "gcc" value
+  d <- seq(from = as.Date("2019-12-28"), 
+           to = as.Date("2020-12-31"), 
+           by = "day")
+  
+  # Create the new data table for the current "gcc" value
+  new <- data.table(
+    gcc = rep(gcc_value, length(d)),
+    date = d,
+    year = year(d),
+    month = sprintf("%02d", month(d)),
+    day = as.integer(format(d, "%d")),
+    doy = yday(d),
+    dow = format(d, "%a"),
+    all = rep(NA_real_, length(d)),
+    all_0_64 = rep(NA_real_, length(d)),
+    all_65plus = rep(NA_real_, length(d)),
+    avg_doy_all = rep(NA_real_, length(d)),
+    avg_doy_all_0_64 = rep(NA_real_, length(d)),
+    avg_doy_all_65plus = rep(NA_real_, length(d))
+  )
+  
+  # Merge the "gcc" observations with the new data
+  gcc_expanded <- rbind(gcc_obs, new, fill = TRUE)
+  
+  # Calculate the previous date values for the current "gcc" value
+  gcc_expanded[, prev_date := prev_date(year, as.integer(month), as.integer(day))]
+  gcc_expanded[, prev_value := gcc_expanded[match(prev_date, date), avg_doy_all, nomatch = NA]]
+  gcc_expanded[, prev_value_0_64 := gcc_expanded[match(prev_date, date), avg_doy_all_0_64, nomatch = NA]]
+  gcc_expanded[, prev_value_65plus := gcc_expanded[match(prev_date, date), avg_doy_all_65plus, nomatch = NA]]
+  
+  # Order the data by date
+  gcc_expanded <- gcc_expanded[order(date)]
+  
+  # Remove duplicated dates (second ones)
+  gcc_expanded <- gcc_expanded[!duplicated(date, fromLast = TRUE)]
+  
+  # Assign previous values
+  gcc_expanded[is.na(avg_doy_all), avg_doy_all := prev_value]
+  gcc_expanded[is.na(avg_doy_all_0_64), avg_doy_all_0_64 := prev_value_0_64]
+  gcc_expanded[is.na(avg_doy_all_65plus), avg_doy_all_65plus := prev_value_65plus]
+  
+  # Remove temporary columns
+  gcc_expanded[, c("prev_date", 
+                   "prev_value", 
+                   "prev_value_0_64", 
+                   "prev_value_65plus") := NULL]
+  
+  # Add the merged data to the list
+  merged_list[[gcc_value]] <- gcc_expanded
+}
 
-# Create a new data frame with extended dates
-extended_obs <- data.frame(
-  gcc = c(obs$gcc, rep(obs$gcc[(nrow(obs) - 7):nrow(obs)], length(extended_dates))),
-  date = c(obs$date, extended_dates_rep)
-)
+# Merge all the results into a single data table
+sim_obs <- rbindlist(merged_list)
 
-# Extract year, month, day, doy, and dow from the 'date' column of extended_obs
-extended_obs$year <- format(extended_obs$date, "%Y")
-extended_obs$month <- format(extended_obs$date, "%m")
-extended_obs$day <- format(extended_obs$date, "%d")
-extended_obs$doy <- format(extended_obs$date, "%j")
-extended_obs$dow <- format(extended_obs$date, "%a")
+# Sort the merged data by date
+sim_obs <- sim_obs[order(date)]
 
-# Copy to extended_obs, and NA for extended dates
-extended_obs$all <- c(obs$all, rep(NA, length(extended_dates_rep)))
-extended_obs$all_0_64 <- c(obs$all_0_64, rep(NA, length(extended_dates_rep)))
-extended_obs$all_65plus <- c(obs$all_65plus, rep(NA, length(extended_dates_rep)))
-
-# Avg doy variables
-# Merge the two data.tables based on the common columns 'gcc' and 'date'
-extended_obs <- as.data.table(extended_obs)
-
-extended_obs <- merge(extended_obs, 
-                      obs[, c("gcc", 
-                              "date", 
-                              "avg_doy_all", 
-                              "avg_doy_all_0_64", 
-                              "avg_doy_all_65plus")],
-                      by = c("date", "gcc"), all.x = TRUE)
-
-# Sort the data by date in ascending order
-setkey(extended_obs, date)
-
-extended_obs[, c("year", 
-                 "month", 
-                 "day", 
-                 "doy") := lapply(.SD, as.numeric), 
-             .SDcols = c("year", 
-                         "month", 
-                         "day", 
-                         "doy")]
-
-# Create a separate data.table for the values from 2019
-values_2019 <- extended_obs[year == 2019, .(gcc, doy, avg_doy_all, avg_doy_all_0_64, avg_doy_all_65plus)]
-
-# Subset the rows of extended_obs for the year 2020
-extended_obs_2020 <- extended_obs[year == 2020]
-
-# Join the data.tables based on gcc, doy, and year conditions
-extended_obs_2020[values_2019, on = .(gcc, doy), 
-                  `:=` (avg_doy_all = i.avg_doy_all,
-                        avg_doy_all_0_64 = i.avg_doy_all_0_64,
-                        avg_doy_all_65plus = i.avg_doy_all_65plus)]
-
-# Assign the modified rows back to extended_obs
-extended_obs[year == 2020] <- extended_obs_2020
-
-
-# qc
-# Specify the target month and year
-s <- "1GSYD"
-m <- 12
-y <- 2019:2020
-
-# Filter the data to include only the rows matching the target GCC, month, and year range
-filtered_obs <- extended_obs[gcc == s & month == m & year %in% y]
-
+return(sim_obs)
+}

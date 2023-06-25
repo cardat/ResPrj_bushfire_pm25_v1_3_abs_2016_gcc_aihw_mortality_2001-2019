@@ -32,6 +32,14 @@ list(
     )
   )
   ,
+  #### dat_mort_aihw ####
+  tar_target(
+    dat_mort_aihw_simulated_2020,
+    do_simulate_aihw_2020(
+      dat_mort_aihw
+    )
+  )
+  ,
   ### ANALYSIS ####
   #### set_counterfactual ####
   tar_target(
