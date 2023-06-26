@@ -28,6 +28,20 @@ gcc_list <- c("1GSYD",
 # Create an empty list to store the results for each "gcc"
 merged_list <- list()
 
+# Create a temporary column for the previous year's date
+prev_date <- function(year, month, day) {
+  if (month == 2 && day == 29) {
+    leap_year <- ifelse(year %% 4 == 0 && (year %% 100 != 0 || year %% 400 == 0), TRUE, FALSE)
+    if (leap_year) {
+      return(as.Date(paste(year - 1, "-02-28", sep = "")))
+    } else {
+      return(as.Date(paste(year - 1, "-02-29", sep = "")))
+    }
+  } else {
+    return(as.Date(paste(year - 1, month, day, sep = "-")))
+  }
+}
+
 # Iterate over each "gcc" value
 for (gcc_value in gcc_list) {
   # Subset the "obs" data for the current "gcc" value

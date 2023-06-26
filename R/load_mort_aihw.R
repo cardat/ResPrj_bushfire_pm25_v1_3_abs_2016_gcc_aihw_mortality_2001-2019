@@ -59,6 +59,5 @@ load_mort_aihw <- function(
     "avg_doy_all_65plus"), 
     with = FALSE]
   
-
   return(obs)
 }

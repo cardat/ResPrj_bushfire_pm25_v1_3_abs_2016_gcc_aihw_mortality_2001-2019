@@ -1,6 +1,9 @@
 library(targets)
+
 lapply(list.files("R", full.names = TRUE), source)
+
 config <- yaml::read_yaml("config.yaml")
+
 tar_option_set(
   packages =
     c("targets",
@@ -32,7 +35,8 @@ list(
     )
   )
   ,
-  #### dat_mort_aihw ####
+  ### DERIVE/ADJUST ####
+  #### dat_mort_aihw_simulated_2020 ####
   tar_target(
     dat_mort_aihw_simulated_2020,
     do_simulate_aihw_2020(
@@ -40,7 +44,6 @@ list(
     )
   )
   ,
-  ### ANALYSIS ####
   #### set_counterfactual ####
   tar_target(
     set_counterfactual,
@@ -49,6 +52,17 @@ list(
     )
   )
   ,
+  ### MERGE OUTCOME AND EXPOSURE ####
+  #### mrg_mort_pm25 ####
+  tar_target(
+    mrg_mort_pm25,
+    do_mrg_mort_pm25(
+      dat_mort_aihw_simulated_2020,
+      set_counterfactual
+    )
+  )
+  ,
+  ### ANALYSIS ####
   # #### pop_weighted_avg_exp ####
   # tar_target(
   #   pop_weighted_avg_exp,
@@ -58,13 +72,11 @@ list(
   #   )
   # )
   # ,
-  # #### Relative Risks and Theoretical Minimum Risk Exposure Level ####
+  #### Relative Risks and Theoretical Minimum Risk Exposure Level ####
   # tar_target(
-  #   health_impact,
-  #   do_health_impact(
-  #     case_definition = "",
-  #     rr = c(),
-  #     tmrel = 0
+  #   exposure_to_pm25_response,
+  #   do_exposure_to_pm25_response(
+  #     
   #   )
   # )
   # ,
@@ -82,7 +94,7 @@ list(
   tar_target(
     plot_mortality_gcc,
     do_plot_mortality_gcc(
-      dat_mort_aihw
+      dat_mort_aihw_simulated_2020
     )
   )
   # ,

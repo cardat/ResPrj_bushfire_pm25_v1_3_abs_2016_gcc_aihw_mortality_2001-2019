@@ -1,14 +1,14 @@
 do_plot_mortality_gcc <- function(
-    obs
+    sim_obs
 ){
-  syd <- obs[gcc == "1GSYD"]
-  mel <- obs[gcc == "2GMEL"]
-  bri <- obs[gcc == "3GBRI"]
-  ade <- obs[gcc == "4GADE"]
-  per <- obs[gcc == "5GPER"]
-  hob <- obs[gcc == "6GHOB"]
-  dar <- obs[gcc == "7GDAR"]
-  act <- obs[gcc == "8ACTE"]
+  syd <- sim_obs[gcc == "1GSYD"]
+  mel <- sim_obs[gcc == "2GMEL"]
+  bri <- sim_obs[gcc == "3GBRI"]
+  ade <- sim_obs[gcc == "4GADE"]
+  per <- sim_obs[gcc == "5GPER"]
+  hob <- sim_obs[gcc == "6GHOB"]
+  dar <- sim_obs[gcc == "7GDAR"]
+  act <- sim_obs[gcc == "8ACTE"]
   
   gccs <- c("act", "ade", "bri", "dar", "hob", "mel", "per", "syd")
   titles <- c("Australian Capital Territory", "Adelaide", "Brisbane", "Darwin", "Hobart", "Melbourne", "Perth", "Sydney")
@@ -58,4 +58,11 @@ do_plot_mortality_gcc <- function(
       text(par("usr")[1] - 20, mean_point, labels = "Daily deaths", xpd = NA, srt = 90, cex = 1.8)  
     }
   }
-}
+  mort_plot <- file.path(config$outdir, config$outdat_mort)
+  jpeg(filename = mort_plot, width = 2160, height = 3840, res = 600)
+  
+  dev.off()  # Close the JPEG device and save the plot
+  
+  # Return the output file path
+  return(mort_plot)
+ }
