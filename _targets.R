@@ -63,32 +63,40 @@ list(
   )
   ,
   ### ANALYSIS ####
-  # #### pop_weighted_avg_exp ####
-  # tar_target(
-  #   pop_weighted_avg_exp,
-  #   do_pop_weighted_avg_exp(
-  #     set_counterfactual,
-  #     dat_mort_aihw
-  #   )
-  # )
-  # ,
-  #### Relative Risks and Theoretical Minimum Risk Exposure Level ####
-  # tar_target(
-  #   exposure_to_pm25_response,
-  #   do_exposure_to_pm25_response(
-  #     
-  #   )
-  # )
-  # ,
-  # #### Attributable number of deaths ####
-  # tar_target(
-  #   att_number,
-  #   do_att_number(
-  #     health_impact,
-  #     pop_weighted_exp
-  #   )
-  # )
-  # ,
+  #### calc_rr ####
+  tar_target(
+    calc_rr,
+    do_calc_rr(
+      mrg_mort_pm25
+    )
+  )
+  ,
+  #### calc_paf ####
+  tar_target(
+    calc_paf,
+    do_calc_paf(
+      calc_rr
+    )
+  )
+  ,
+  #### calc_an_all_ages ####
+  tar_target(
+    calc_an_all_ages,
+    do_calc_an_all_ages(
+      calc_paf,
+      mrg_mort_pm25
+    )
+  )
+  ,
+  #### calc_scale_per_capita ####
+  tar_target(
+    calc_scale_per_capita,
+    do_calc_scale_per_capita(
+      calc_an_all_ages,
+      mrg_mort_pm25
+    )
+  )
+  ,
   ### OUTPUTS ####
   #### plot_mortality_gcc ####
   tar_target(
@@ -105,4 +113,10 @@ list(
   #     dat_mort_aihw
   #   )
   # )
+  #### table_an_per_capita ####
+  # tar_target(
+  #   table_an_per_capita,
+  #   do_table_an_per_capita(
+  #     calc_scale_per_capita
+  #   )
 )

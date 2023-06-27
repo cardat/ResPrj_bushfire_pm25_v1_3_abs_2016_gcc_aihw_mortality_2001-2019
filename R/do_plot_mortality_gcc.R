@@ -1,6 +1,9 @@
 do_plot_mortality_gcc <- function(
     sim_obs
 ){
+  png(file = file.path(config$outdir, config$outdat_mort), 
+      width = 1080, height = 1920, res = 100, units = "px")
+  
   syd <- sim_obs[gcc == "1GSYD"]
   mel <- sim_obs[gcc == "2GMEL"]
   bri <- sim_obs[gcc == "3GBRI"]
@@ -57,12 +60,10 @@ do_plot_mortality_gcc <- function(
       ## Insert text
       text(par("usr")[1] - 20, mean_point, labels = "Daily deaths", xpd = NA, srt = 90, cex = 1.8)  
     }
+    # Prompt the user to advance to a new page or device window
+    devAskNewPage()
   }
-  mort_plot <- file.path(config$outdir, config$outdat_mort)
-  jpeg(filename = mort_plot, width = 2160, height = 3840, res = 600)
   
-  dev.off()  # Close the JPEG device and save the plot
-  
-  # Return the output file path
-  return(mort_plot)
+  # Close the PNG device to save the plot
+  dev.off()
  }

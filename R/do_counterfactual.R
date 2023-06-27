@@ -22,7 +22,7 @@ do_counterfactual <- function (
   ## population as numeric
   pm25_stl$pop <- as.numeric(pm25_stl$pop)
   
-  ## averages by gccs and date
+  ## averages by gccs and date and sum population (SA1s sum = GCC)
   pm25 <- pm25_stl[,.(
     pm25_pred = mean(pm25_pred, na.rm = T),
     remainder = mean(remainder, na.rm = T),
