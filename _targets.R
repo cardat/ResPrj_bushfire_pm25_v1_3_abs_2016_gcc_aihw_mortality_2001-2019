@@ -44,11 +44,19 @@ list(
     )
   )
   ,
-  #### set_counterfactual ####
+  #### dat_avg_gcc ####
   tar_target(
-    set_counterfactual,
-    do_counterfactual(
+    dat_avg_gcc,
+    do_avg_gcc(
       dat_bushfire_pm25
+    )
+  )
+  ,
+  #### dat_cf ####
+  tar_target(
+    dat_cf,
+    do_cf(
+      dat_avg_gcc
     )
   )
   ,
@@ -58,7 +66,7 @@ list(
     mrg_mort_pm25,
     do_mrg_mort_pm25(
       dat_mort_aihw_simulated_2020,
-      set_counterfactual
+      dat_cf
     )
   )
   ,
@@ -113,10 +121,4 @@ list(
   #     dat_mort_aihw
   #   )
   # )
-  #### table_an_per_capita ####
-  # tar_target(
-  #   table_an_per_capita,
-  #   do_table_an_per_capita(
-  #     calc_scale_per_capita
-  #   )
 )

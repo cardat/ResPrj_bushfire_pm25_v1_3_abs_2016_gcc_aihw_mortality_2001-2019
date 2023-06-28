@@ -28,36 +28,28 @@ do_calc_scale_per_capita <- function(
            c("Year", "Sydney", "Melbourne", "Brisbane", "Adelaide", 
              "Perth", "Hobart", "Darwin", "ACT"))
   # Calculate total row
-  total_row <- colSums(scale_per_capita[, -1], na.rm = TRUE)
-  total_row <- data.table(t(total_row))
-  # Add "Total" as the first column in total_row
-  total_row <- cbind("Attr.Num.Scaled", total_row)
-  # Rename the columns in total_row
-  colnames(total_row) <- c("Year", "Sydney", "Melbourne", "Brisbane", "Adelaide", "Perth", "Hobart", "Darwin", "ACT")
-  
-  # Create the scaling factor
-  scaling_factor <- subset_pop_pivot[, lapply(.SD, function(x) sum(x) / 100000)]
-  
-  # Add Est.Deaths to scaling factor
-  scaling_factor <- cbind("Est.Deaths", scaling_factor)
-  
-  total_row_numeric <- as.numeric(total_row[, -1])
-  # Multiply the total row by the scaling factor to estimate deaths
-  est_deaths_row <- round(total_row_numeric * scaling_factor[, -1], digits = 0)
-  
-  # Add Est.Deaths to est_deaths_row
-  est_deaths_row <- cbind("Est.Deaths", est_deaths_row)
-  est_deaths_row_int <- as.integer(est_deaths_row)
-  # # Calculate the sum of est_deaths_row
-  # total_est_deaths <- rowSums(est_deaths_row)
-  # 
-  # total_est_deaths <- cbind("Total", total_est_deaths)
+  sum_row <- colSums(scale_per_capita[, -1], na.rm = TRUE)
+  sum_row <- data.table(t(sum_row))
+  # Add "Total" as the first column in sum_row
+  sum_row <- cbind("Sum", sum_row)
+  # Rename the columns in sum_row
+  colnames(sum_row) <- c("Year", "Sydney", "Melbourne", "Brisbane", 
+                           "Adelaide", "Perth", "Hobart", "Darwin", "ACT")
   
   # Add total row to scale_per_capita
   scale_per_capita_bind <- rbind(scale_per_capita, 
-                                 total_row, 
-                                 est_deaths_row,
+                                 sum_row,
                                  use.names=FALSE)
+  
+  # Replace negative values with 0 in scale_per_capita_bind
+  scale_per_capita_bind <- pmax(scale_per_capita_bind, 0)
+  
+  # Round values to 2 decimal places in scale_per_capita_bind, except for the first column
+  cols_to_round <- names(scale_per_capita_bind)[-1]
+  scale_per_capita_bind[, (cols_to_round) := lapply(
+    .SD, function(x) round(x, digits = 2)), 
+    .SDcols = cols_to_round, 
+    with = FALSE]
   
   return(scale_per_capita_bind)
 }

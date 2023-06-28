@@ -25,15 +25,10 @@ do_calc_an_all_ages <- function(
   
   # Iterate over columns starting from the 2nd column
   for (col in names(an_all_ages_dt)[-1]) {
+    # attributable_number <- paf * deaths
     # Multiply each value in the column by the corresponding values in the pivoted table
     an_all_ages_dt[[col]] <- an_all_ages_dt[[col]] * pivoted[[col]]
   }
   return(an_all_ages_dt)
 }
 
-
-# cases <- act$avg_doy_all
-# 
-# attr <- paf * cases
-# attr
-# # [1] 1.167177
