@@ -13,6 +13,15 @@ Lucas Hertzog<sup>1,2</sup>, Edward Jegasothy<sup>3</sup>, Karthik Gopi<sup>3,4<
 3. School of Public Health, Faculty of Medicine and Health, University of Sydney, Camperdown, NSW 2006, Australia 
 4. University Centre for Rural Health, Faculty of Medicine and Health, University of Sydney, Lismore, NSW 2480, Australia
 
+## Study area
+```{r, echo=FALSE}
+
+a <- "figures_and_tables/fig_study_area.png"
+
+# Include the plot in the report
+knitr::include_graphics(a)
+```
+
 ## Outcome
 ### Average Daily Mortality 2001-2020 (AIHW all causes and ages)
 
@@ -32,9 +41,7 @@ p <- "figures_and_tables/fig_pm25_ts_gcc.png"
 knitr::include_graphics(p)
 ```
 
-## Results
-
-### Assumptions
+## Methods
 PM₂.₅ Predicted = Daily PM2.5 predictions from the random forest model (Bushfire_specific_PM25_Aus_2001_2020_v1_3).
 
 The STL method is used to decompose the time-series into three components: trend, seasonal, and remainder.
@@ -64,7 +71,7 @@ $$
 \text{Relative Risk} = \exp \left( \beta \times \text{mean}(\Delta_{\text{yearly}}) \right)
 $$
 
-
+## Results
 
 ```{r, echo=FALSE}
 rr <- targets::tar_read(calc_rr)
