@@ -12,7 +12,7 @@ do_calc_paf <- function(
   # problems with printing numbers with scientific notation)
   # options(scipen = 999)
   
-  # Create an empty data table to store the PAF values
+  # Copy rr data table to store the PAF values
   paf_dt <- copy(rr_dt)
   
   # Iterate over the columns starting from the 2nd column

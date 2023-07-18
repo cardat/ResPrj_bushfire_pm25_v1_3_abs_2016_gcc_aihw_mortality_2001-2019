@@ -16,40 +16,82 @@ do_calc_scale_per_capita <- function(
   # Create a copy of an_all_ages_dt
   scale_per_capita <- copy(an_all_ages_dt)  
   
-  # Divide each cell by pop and multiply by 100,000
-  for (col in names(scale_per_capita)[-1]) {
-    scale_per_capita[, (col) := get(col) / subset_pop_pivot[[col]] * 100000]
+  # Expand subset_pop_pivot to have rr, lb, and ub for each gcc
+  subset_pop_pivot_expanded <- data.table(dummy = subset_pop_pivot$dummy)
+ 
+  gccs <- unique(mrg_dat$gcc)  # Obtain unique values from the gcc column
+  
+  for (gcc_val in gccs) {
+    dt <- data.table(
+      rr = subset_pop_pivot[[gcc_val]], 
+      lb = subset_pop_pivot[[gcc_val]], 
+      ub = subset_pop_pivot[[gcc_val]])
+    setnames(dt, 
+             old = c("rr", "lb", "ub"), 
+             new = c(paste0(gcc_val,"_rr"), 
+                     paste0(gcc_val,"_lb"), 
+                     paste0(gcc_val,"_ub")))
+    subset_pop_pivot_expanded <- cbind(subset_pop_pivot_expanded, dt)
   }
   
-  # Rename columns
-  setnames(scale_per_capita, 
-           c("year", "1GSYD", "2GMEL", "3GBRI", "4GADE", "5GPER", "6GHOB", 
-             "7GDAR", "8ACTE"),
-           c("Year", "Sydney", "Melbourne", "Brisbane", "Adelaide", 
-             "Perth", "Hobart", "Darwin", "ACT"))
-  # Calculate total row
-  sum_row <- colSums(scale_per_capita[, -1], na.rm = TRUE)
-  sum_row <- data.table(t(sum_row))
-  # Add "Total" as the first column in sum_row
-  sum_row <- cbind("Sum", sum_row)
-  # Rename the columns in sum_row
-  colnames(sum_row) <- c("Year", "Sydney", "Melbourne", "Brisbane", 
-                           "Adelaide", "Perth", "Hobart", "Darwin", "ACT")
+  # Remove the dummy variable
+  subset_pop_pivot_expanded[, dummy := NULL]
   
-  # Add total row to scale_per_capita
-  scale_per_capita_bind <- rbind(scale_per_capita, 
-                                 sum_row,
-                                 use.names=FALSE)
+  # Divide each cell by pop and multiply by 100,000
+  for (col in names(scale_per_capita)[-1]) {
+    scale_per_capita[, (col) := get(col) / subset_pop_pivot_expanded[[col]] * 100000]
+  }
+  
+  # Rename columns in subset_pop_pivot_expanded
+  setnames(subset_pop_pivot_expanded, 
+           c(
+             paste0("1GSYD", c("_rr", "_lb", "_ub")), 
+             paste0("2GMEL", c("_rr", "_lb", "_ub")), 
+             paste0("3GBRI", c("_rr", "_lb", "_ub")), 
+             paste0("4GADE", c("_rr", "_lb", "_ub")), 
+             paste0("5GPER", c("_rr", "_lb", "_ub")), 
+             paste0("6GHOB", c("_rr", "_lb", "_ub")), 
+             paste0("7GDAR", c("_rr", "_lb", "_ub")), 
+             paste0("8ACTE", c("_rr", "_lb", "_ub"))),
+           c(
+             paste0("Sydney", c("_rr", "_lb", "_ub")), 
+             paste0("Melbourne", c("_rr", "_lb", "_ub")), 
+             paste0("Brisbane", c("_rr", "_lb", "_ub")), 
+             paste0("Adelaide", c("_rr", "_lb", "_ub")), 
+             paste0("Perth", c("_rr", "_lb", "_ub")), 
+             paste0("Hobart", c("_rr", "_lb", "_ub")), 
+             paste0("Darwin", c("_rr", "_lb", "_ub")), 
+             paste0("ACT", c("_rr", "_lb", "_ub"))))
+  # Rename columns
+  setnames(scale_per_capita,
+           c("year",
+             paste0("1GSYD", c("_rr", "_lb", "_ub")),
+             paste0("2GMEL", c("_rr", "_lb", "_ub")),
+             paste0("3GBRI", c("_rr", "_lb", "_ub")),
+             paste0("4GADE", c("_rr", "_lb", "_ub")),
+             paste0("5GPER", c("_rr", "_lb", "_ub")),
+             paste0("6GHOB", c("_rr", "_lb", "_ub")),
+             paste0("7GDAR", c("_rr", "_lb", "_ub")),
+             paste0("8ACTE", c("_rr", "_lb", "_ub"))),
+           c("Year",
+             paste0("Sydney", c("_rr", "_lb", "_ub")),
+             paste0("Melbourne", c("_rr", "_lb", "_ub")),
+             paste0("Brisbane", c("_rr", "_lb", "_ub")),
+             paste0("Adelaide", c("_rr", "_lb", "_ub")),
+             paste0("Perth", c("_rr", "_lb", "_ub")),
+             paste0("Hobart", c("_rr", "_lb", "_ub")),
+             paste0("Darwin", c("_rr", "_lb", "_ub")),
+             paste0("ACT", c("_rr", "_lb", "_ub"))))
   
   # Replace negative values with 0 in scale_per_capita_bind
-  scale_per_capita_bind <- pmax(scale_per_capita_bind, 0)
+  scale_per_capita <- pmax(scale_per_capita, 0)
   
   # Round values to 2 decimal places in scale_per_capita_bind, except for the first column
-  cols_to_round <- names(scale_per_capita_bind)[-1]
-  scale_per_capita_bind[, (cols_to_round) := lapply(
+  cols_to_round <- names(scale_per_capita)[-1]
+  scale_per_capita[, (cols_to_round) := lapply(
     .SD, function(x) round(x, digits = 2)), 
     .SDcols = cols_to_round, 
     with = FALSE]
   
-  return(scale_per_capita_bind)
+  return(scale_per_capita)
 }

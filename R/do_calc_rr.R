@@ -11,42 +11,68 @@ do_calc_rr <- function(
     mrg_dat
 ){
 ## Relative risk per 10 pm2.5 unit change (10 μg/m3)
-hrapie <- 1.0123
-unit_change <- 10
-beta <- log(hrapie)/unit_change
-
-gccs <- c("1GSYD", 
-          "2GMEL", 
-          "3GBRI", 
-          "4GADE", 
-          "5GPER", 
-          "6GHOB", 
-          "7GDAR", 
-          "8ACTE")
-years <- 2001:2020
-
-# Compute the mean of "delta" per year per "gcc"
-mean_delta_year <- mrg_dat[, mean(delta), by = .(year, gcc)]
-
-# Create an empty data.table to store the results
-rr_dt <- data.table(gcc = character(), year = integer(), rr = numeric())
-
-# Iterate through gccs and years
-for (gcc_val in gccs) {
-  for (year_val in years) {
-    # Filter the data for the current gcc and year
-    dat <- mrg_dat[gcc == gcc_val & year == year_val]
-    
-    # Compute the mean of "delta" for the current gcc and year
-    mean_delta_year <- mean(dat$delta)
-    
-    # Estimate rr using the formula
-    rr <- exp(beta * mean_delta_year)
-    
-    # Add the result to the rr_dt data.table
-    rr_dt <- rbind(rr_dt, data.table(gcc = gcc_val, year = year_val, rr = rr))
+  hrapie = c(1.0123, 1.0045, 1.0201)  # RR, LB, UP respectively
+  unit_change <- 10
+  
+  # Calculate the beta values for each component of hrapie
+  beta <- log(hrapie)/unit_change
+  
+  gccs <- c("1GSYD", 
+            "2GMEL", 
+            "3GBRI", 
+            "4GADE", 
+            "5GPER", 
+            "6GHOB", 
+            "7GDAR", 
+            "8ACTE")
+  years <- 2001:2020
+  
+  # Create empty data.table to store the results
+  # For each gcc we will have 3 columns: rr, lb, and ub
+  rr_dt <- data.table(year = integer())
+  for (gcc_val in gccs) {
+    dt <- data.table(
+      rr = numeric(), 
+      lb = numeric(), 
+      ub = numeric()
+      )
+    setnames(dt, 
+             old = c("rr", "lb", "ub"), 
+             new = c(
+               paste0(gcc_val,"_rr"), 
+               paste0(gcc_val,"_lb"), 
+               paste0(gcc_val,"_ub")
+               )
+             )
+    rr_dt <- cbind(rr_dt, dt)
   }
-}
-rr_dt <- dcast(rr_dt, year ~ gcc, value.var = "rr")
+  
+  # Iterate through years
+  for (year_val in years) {
+    # Initialize a list to store the data for this year
+    year_data <- list(year = year_val)
+    
+    # Iterate through gccs
+    for (gcc_val in gccs) {
+      # Filter the data for the current gcc and year
+      dat <- mrg_dat[gcc == gcc_val & year == year_val]
+      
+      # Compute the mean of "delta" for the current gcc and year
+      mean_delta_year <- mean(dat$delta)
+      
+      # Estimate rr, lb and ub using the formula
+      rr <- exp(beta[1] * mean_delta_year)
+      lb <- exp(beta[2] * mean_delta_year)
+      ub <- exp(beta[3] * mean_delta_year)
+      
+      # Add the data for this gcc to the year_data list
+      year_data[[paste0(gcc_val,"_rr")]] <- rr
+      year_data[[paste0(gcc_val,"_lb")]] <- lb
+      year_data[[paste0(gcc_val,"_ub")]] <- ub
+    }
+    
+    # Add the data for this year to the rr_dt data.table
+    rr_dt <- rbind(rr_dt, year_data, fill = TRUE)
+  }
 return(rr_dt)
 }

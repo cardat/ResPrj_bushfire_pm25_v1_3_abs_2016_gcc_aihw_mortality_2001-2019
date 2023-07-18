@@ -97,6 +97,14 @@ list(
     )
   )
   ,
+  #### calc_an_all_ages_sum ####
+  tar_target(
+    calc_an_all_ages_sum,
+    do_calc_an_all_ages_sum(
+      calc_an_all_ages
+    )
+  )
+  ,
   #### calc_scale_per_capita ####
   tar_target(
     calc_scale_per_capita,
@@ -125,10 +133,19 @@ list(
   ,
   #### plot_pm25_gccs ####
   tar_target(
-    plot_plot_pm25_gccs,
+    plot_pm25_gccs,
     do_plot_pm25_gccs(
       dat_cf,
       plot_extreme_days
+    )
+  )
+  ,
+  ### QUALITY CHECK ####
+  #### an_all_ages_sum_qc ####
+  tar_target(
+    an_all_ages_sum_qc,
+    do_an_all_ages_sum_qc(
+      calc_an_all_ages_sum  
     )
   )
 )

@@ -23,11 +23,28 @@ do_calc_an_all_ages <- function(
   # Pivot
   pivoted <- dcast(sum_all_ages, year ~ gcc, value.var = "sum_year_all")
   
-  # Iterate over columns starting from the 2nd column
+  # Create a new pivoted table with duplicated columns
+  pivoted_expanded <- data.table(year = pivoted$year)
+  
+  gccs <- unique(mrg_dat$gcc)  # Obtain unique values from the gcc column
+  
+  for (gcc_val in gccs) {
+    dt <- data.table(rr = pivoted[[gcc_val]], 
+                     lb = pivoted[[gcc_val]], 
+                     ub = pivoted[[gcc_val]])
+    setnames(dt, 
+             old = c("rr", "lb", "ub"), 
+             new = c(paste0(gcc_val,"_rr"), 
+                     paste0(gcc_val,"_lb"), 
+                     paste0(gcc_val,"_ub")
+                     )
+             )
+    pivoted_expanded <- cbind(pivoted_expanded, dt)
+  }
+  
+  # multiply columns
   for (col in names(an_all_ages_dt)[-1]) {
-    # attributable_number <- paf * deaths
-    # Multiply each value in the column by the corresponding values in the pivoted table
-    an_all_ages_dt[[col]] <- an_all_ages_dt[[col]] * pivoted[[col]]
+    an_all_ages_dt[[col]] <- an_all_ages_dt[[col]] * pivoted_expanded[[col]]
   }
   return(an_all_ages_dt)
 }
