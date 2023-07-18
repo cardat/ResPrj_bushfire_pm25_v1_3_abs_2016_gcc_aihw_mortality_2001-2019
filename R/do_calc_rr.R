@@ -23,7 +23,7 @@ gccs <- c("1GSYD",
           "6GHOB", 
           "7GDAR", 
           "8ACTE")
-years <- 2002:2020
+years <- 2001:2020
 
 # Compute the mean of "delta" per year per "gcc"
 mean_delta_year <- mrg_dat[, mean(delta), by = .(year, gcc)]

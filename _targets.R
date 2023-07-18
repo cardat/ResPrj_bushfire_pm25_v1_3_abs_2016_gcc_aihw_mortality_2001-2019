@@ -13,7 +13,8 @@ tar_option_set(
       "sf",
       "sp",
       "lubridate",
-      "Hmisc"
+      "Hmisc",
+      "extrafont"
     )
 )
 
@@ -113,12 +114,21 @@ list(
       dat_mort_aihw_simulated_2020
     )
   )
-  # ,
-  # #### plot_mortality_all ####
-  # tar_target(
-  #   plot_mortality_all,
-  #   do_plot_mortality_all(
-  #     dat_mort_aihw
-  #   )
-  # )
+  ,
+  #### plot_extreme_days ####
+  tar_target(
+    plot_extreme_days,
+    do_plot_extreme_days(
+      dat_cf
+    )
+  )
+  ,
+  #### plot_pm25_gccs ####
+  tar_target(
+    plot_plot_pm25_gccs,
+    do_plot_pm25_gccs(
+      dat_cf,
+      plot_extreme_days
+    )
+  )
 )
