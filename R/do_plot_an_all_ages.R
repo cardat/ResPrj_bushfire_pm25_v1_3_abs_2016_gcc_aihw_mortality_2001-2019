@@ -16,17 +16,19 @@ par(
   cex.lab = 1
 )
 
+an_all_ages_dt[, year := year(date)]  # if date is of class Date, use lubridate package
 
 # Initialize the sum_data data frame
-sum_data <- data.frame(date = an_all_ages_dt$date,
-                       rr = numeric(length(an_all_ages_dt$date)),
-                       lb = numeric(length(an_all_ages_dt$date)),
-                       ub = numeric(length(an_all_ages_dt$date)))
+sum_data <- data.frame(
+  year = unique(an_all_ages_dt$year),
+  rr = numeric(length(unique(an_all_ages_dt$year))),
+  lb = numeric(length(unique(an_all_ages_dt$year))),
+  ub = numeric(length(unique(an_all_ages_dt$year))))
 
-gccs <- unique(mrg_mort_pm25$gcc)  # Obtain unique values from the gcc column
+gccs <- unique(mrg_dat$gcc)  # Obtain unique values from the gcc column
 
 # Iterate over the dates
-for (i in 1:length(an_all_ages_dt$date)) {
+for (i in sum_data$year) {
   # Initialize the sum variables for each date
   rr_sum <- 0
   lb_sum <- 0
@@ -40,30 +42,30 @@ for (i in 1:length(an_all_ages_dt$date)) {
     ub_col <- paste0(gcc, "_ub")
 
     # Add the values to the sum variables
-    rr_sum <- rr_sum + sum(an_all_ages_dt[i, get(rr_col)], na.rm = TRUE)
-    lb_sum <- lb_sum + sum(an_all_ages_dt[i, get(lb_col)], na.rm = TRUE)
-    ub_sum <- ub_sum + sum(an_all_ages_dt[i, get(ub_col)], na.rm = TRUE)
+    rr_sum <- rr_sum + sum(an_all_ages_dt[year == i, get(rr_col)], na.rm = TRUE)
+    lb_sum <- lb_sum + sum(an_all_ages_dt[year == i, get(lb_col)], na.rm = TRUE)
+    ub_sum <- ub_sum + sum(an_all_ages_dt[year == i, get(ub_col)], na.rm = TRUE)
   }
 
   # Assign the sum values to the corresponding row in sum_data
-  sum_data$rr[i] <- rr_sum
-  sum_data$lb[i] <- lb_sum
-  sum_data$ub[i] <- ub_sum
+  sum_data$rr[sum_data$year == i] <- rr_sum
+  sum_data$lb[sum_data$year == i] <- lb_sum
+  sum_data$ub[sum_data$year == i] <- ub_sum
 }
 
 # Plotting
-plot(sum_data$date, sum_data$rr, type = "l", col = "red",
-     xlab = "date", ylab = "Deaths", main = "",
-     xlim = range(an_all_ages_dt$date), ylim = c(0, max(sum_data$ub, na.rm = TRUE)),
+plot(sum_data$year, sum_data$rr, type = "l", col = "red",
+     xlab = "Year", ylab = "Deaths", main = "",
+     xlim = range(an_all_ages_dt$year), ylim = c(0, max(sum_data$ub, na.rm = TRUE)),
      xaxt = "n")
 
 # Add shaded area for LB and UB
-polygon(c(sum_data$date, rev(sum_data$date)), c(sum_data$lb, rev(sum_data$ub)),
+polygon(c(sum_data$year, rev(sum_data$year)), c(sum_data$lb, rev(sum_data$ub)),
         col = adjustcolor("red", alpha.f = 0.2),
         border = NA)
 
-# Add dately ticks on x-axis
-axis(1, at = sum_data$date, labels = sum_data$date)
+# Add yearly ticks on x-axis
+axis(1, at = sum_data$year, labels = sum_data$year)
 
 # Add legend
 legend("topleft", 

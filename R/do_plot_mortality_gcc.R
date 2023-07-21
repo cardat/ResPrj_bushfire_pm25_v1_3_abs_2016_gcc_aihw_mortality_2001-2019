@@ -1,6 +1,8 @@
 do_plot_mortality_gcc <- function(
     sim_obs
 ){
+  png("figures_and_tables/fig_mortality.png", res = 250, height = 3840, width = 2160)
+  
   syd <- sim_obs[gcc == "1GSYD"]
   mel <- sim_obs[gcc == "2GMEL"]
   bri <- sim_obs[gcc == "3GBRI"]
@@ -11,7 +13,8 @@ do_plot_mortality_gcc <- function(
   act <- sim_obs[gcc == "8ACTE"]
   
   gccs <- c("act", "ade", "bri", "dar", "hob", "mel", "per", "syd")
-  titles <- c("Australian Capital Territory", "Adelaide", "Brisbane", "Darwin", "Hobart", "Melbourne", "Perth", "Sydney")
+  titles <- c("Australian Capital Territory", "Adelaide", "Brisbane", 
+              "Darwin", "Hobart", "Melbourne", "Perth", "Sydney")
   
   par(mfrow = c(length(gccs), 1),
       mar = c(0.2, 2, 0.2, 0.2),
@@ -58,4 +61,5 @@ do_plot_mortality_gcc <- function(
       text(par("usr")[1] - 20, mean_point, labels = "Daily deaths", xpd = NA, srt = 90, cex = 1.8)  
     }
   }
+  dev.off()
  }

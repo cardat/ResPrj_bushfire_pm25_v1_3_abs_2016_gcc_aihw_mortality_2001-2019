@@ -2,9 +2,12 @@
 title: "Increased risks of mortality in the 21st century (2001-2020) attributable
   to PM₂.₅ in Australian Great Capital Cities"
 output:
-  html_document: default
-  word_document: default
-  pdf_document: default
+  html_document:
+    keep_md: true
+    fig_path: "report/"
+    md_document:
+      variant: markdown_strict
+      path: "report/"
 ---
 Lucas Hertzog<sup>1,2</sup>, Edward Jegasothy<sup>3</sup>, Karthik Gopi<sup>3,4</sup>, Cassandra Yuen<sup>1,3</sup>, Dana Jordan<sup>3</sup>, Geoffrey Morgan<sup>3,4</sup>, Ivan Hanigan<sup>1,2</sup>
 
@@ -14,32 +17,44 @@ Lucas Hertzog<sup>1,2</sup>, Edward Jegasothy<sup>3</sup>, Karthik Gopi<sup>3,4<
 4. University Centre for Rural Health, Faculty of Medicine and Health, University of Sydney, Lismore, NSW 2480, Australia
 
 ## Study area
-```{r, echo=FALSE}
-
-a <- "figures_and_tables/fig_study_area.png"
-
-# Include the plot in the report
-knitr::include_graphics(a)
-```
+<img src="figures_and_tables/fig_study_area.png" width="3507" />
 
 ## Outcome
 ### Average Daily Mortality 2001-2020 (AIHW all causes and ages)
 
-```{r, echo=FALSE}
-aihw <- "figures_and_tables/Fig1_mort_avg_doy_all.png"
-knitr::include_graphics(aihw)
+<img src="figures_and_tables/fig_mortality.png" width="2160" />
 
-```
+
+Table: Summary of study cities and number of deaths from 2001 to 2020
+
+|City      |Deaths  |
+|:---------|:-------|
+|Sydney    |618,067 |
+|Melbourne |557,186 |
+|Brisbane  |278,566 |
+|Adelaide  |216,568 |
+|Perth     |230,698 |
+|Hobart    |41,271  |
+|Darwin    |11,261  |
+|Canberra  |39,012  |
 
 ## Exposure
+
+Table: Summary  in number of days per air quality level. The ratio represents the sum of all days with PM₂.₅ (µg/m³) levels not considered good by WHO divided by days considered good. GCCs are ranked from best to worst ratio.
+
+|City      | good| moderate| unhealthy_sensitive| unhealthy| very_unhealthy| hazardous| extreme|      Ratio|
+|:---------|----:|--------:|-------------------:|---------:|--------------:|---------:|-------:|----------:|
+|Hobart    | 5483|     1800|                  11|        10|              1|         0|       0|  0.3322998|
+|Darwin    | 2431|     3296|                1503|        75|              0|         0|       0|  2.0049362|
+|Canberra  | 2398|     4708|                 115|        27|             40|        13|       4|  2.0462886|
+|Brisbane  | 2079|     5138|                  65|        19|              3|         1|       0|  2.5137085|
+|Melbourne | 1892|     5279|                 100|        24|              9|         1|       0|  2.8609937|
+|Sydney    | 1213|     5911|                 123|        46|             11|         1|       0|  5.0222589|
+|Adelaide  |  612|     6662|                  26|         5|              0|         0|       0| 10.9362745|
+|Perth     |  150|     7071|                  77|         7|              0|         0|       0| 47.7000000|
+
 ### PM₂.₅ (µg/m³) time-series 2001-2020
-```{r, echo=FALSE}
-
-p <- "figures_and_tables/fig_pm25_ts_gcc.png"
-
-# Include the plot in the report
-knitr::include_graphics(p)
-```
+<img src="figures_and_tables/fig_exposure_time_series.png" width="3840" />
 
 ## Methods
 PM₂.₅ Predicted = Daily PM2.5 predictions from the random forest model (Bushfire_specific_PM25_Aus_2001_2020_v1_3).
@@ -73,51 +88,21 @@ $$
 
 ## Results
 
-```{r, echo=FALSE}
-rr <- targets::tar_read(calc_rr)
-knitr::kable(rr,
-             caption = "Relative Risk")
 
-```
 
-```{r, echo=FALSE}
-paf <- targets::tar_read(calc_paf)
-knitr::kable(paf,
-             caption = "Population Attributable Fraction")
 
-```
 
-```{r, echo=FALSE}
-an <- targets::tar_read(calc_an_all_ages)
-knitr::kable(an, 
-             caption = "Attributable Number" )
-```
 
-```{r, echo=FALSE}
-an_sum <- targets::tar_read(calc_an_all_ages_sum)
-knitr::kable(an_sum, 
-             caption = "Attributable Number - Sum" )
-```
 
-```{r, echo=FALSE}
-scale <- targets::tar_read(calc_scale_per_capita)
-knitr::kable(scale, 
-             caption = "Scaling - per capita" )
-```
+
+
+
+<img src="figures_and_tables/fig_an_100.png" width="1920" />
+
+
 
 ## Quality check
 
-```{r, echo=FALSE}
-qc_an <- targets::tar_read(an_all_ages_sum_qc)
-knitr::kable(qc_an, 
-             caption = "Quality Check - AN" )
-```
 
-### Fay H. Johnston 2020 
-```{r, echo=FALSE}
 
-j <- "figures_and_tables/qc_johnston.png"
 
-# Include the plot in the report
-knitr::include_graphics(j)
-```

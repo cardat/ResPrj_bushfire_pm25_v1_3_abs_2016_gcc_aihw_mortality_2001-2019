@@ -107,45 +107,61 @@ list(
     )
   )
   ,
-  #### calc_scale_per_capita ####
-  tar_target(
-    calc_scale_per_capita,
-    do_calc_scale_per_capita(
-      calc_an_all_ages,
-      mrg_mort_pm25
-    )
-  )
-  ,
-  
-  ### POLICY SCENARIOS ####
-  #### calc_rr_975 ####
-  tar_target(
-    calc_rr_975,
-    do_calc_rr_975(
-      mrg_mort_pm25,
-      ## Define the percentile. 1.00 = whole sample
-      threshold = 0.975
-    )
-  )
-  ,
-  #### calc_paf_975 ####
-  tar_target(
-    calc_paf_975,
-    do_calc_paf_975(
-      calc_rr_975
-    )
-  )
-  ,
-  #### calc_an_all_ages_975 ####
-  tar_target(
-    calc_an_all_ages_975,
-    do_calc_an_all_ages_975(
-      calc_paf_975,
-      mrg_mort_pm25
-    )
-  )
-  ,
+  # #### calc_scale_per_capita ####
+  # tar_target(
+  #   calc_scale_per_capita,
+  #   do_calc_scale_per_capita(
+  #     calc_an_all_ages,
+  #     mrg_mort_pm25
+  #   )
+  # )
+  # ,
+  # 
+  # ### POLICY SCENARIOS ####
+  # #### calc_rr_975 ####
+  # tar_target(
+  #   calc_rr_975,
+  #   do_calc_rr_975(
+  #     mrg_mort_pm25,
+  #     ## Define the percentile. 1.00 = whole sample
+  #     threshold = 0.975
+  #   )
+  # )
+  # ,
+  # #### calc_paf_975 ####
+  # tar_target(
+  #   calc_paf_975,
+  #   do_calc_paf_975(
+  #     calc_rr_975
+  #   )
+  # )
+  # ,
+  # #### calc_an_all_ages_975 ####
+  # tar_target(
+  #   calc_an_all_ages_975,
+  #   do_calc_an_all_ages_975(
+  #     calc_paf_975,
+  #     mrg_mort_pm25
+  #   )
+  # )
+  # ,
   ### OUTPUTS ####
+  #### table_mortality ####
+  tar_target(
+    tab_mortality,
+    do_tab_mort(
+      dat_mort_aihw_simulated_2020
+    )
+  )
+  ,
+  #### table_exposure ####
+  tar_target(
+    tab_exposure,
+    do_tab_exposure(
+      dat_cf
+    )
+  )
+  ,
   #### plot_mortality_gcc ####
   tar_target(
     plot_mortality_gcc,
@@ -180,13 +196,13 @@ list(
       mrg_mort_pm25
     )
   )
-  ,
-  ### QUALITY CHECK ####
-  #### an_all_ages_sum_qc ####
-  tar_target(
-    an_all_ages_sum_qc,
-    do_an_all_ages_sum_qc(
-      calc_an_all_ages_sum  
-    )
-  )
+  # ,
+  # ### QUALITY CHECK ####
+  # #### an_all_ages_sum_qc ####
+  # tar_target(
+  #   an_all_ages_sum_qc,
+  #   do_an_all_ages_sum_qc(
+  #     calc_an_all_ages_sum  
+  #   )
+  # )
 )

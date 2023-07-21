@@ -2,7 +2,7 @@ do_plot_pm25_gccs <- function(
     pm25,
     p
 ){
-  png("figures_and_tables/fig_pm25_ts_gcc.png", res = 250, height = 3840, width = 3840)
+  png("figures_and_tables/fig_exposure_time_series.png", res = 250, height = 3840, width = 3840)
   
   layout(matrix(c(1, 2, 3, 4, 5, 6, 7, 8, 9), nrow = 3, byrow = TRUE))
   
