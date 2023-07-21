@@ -76,7 +76,9 @@ list(
   tar_target(
     calc_rr,
     do_calc_rr(
-      mrg_mort_pm25
+      mrg_mort_pm25,
+      ## Define the percentile. 1.00 = whole sample
+      threshold = 1.00
     )
   )
   ,
@@ -114,6 +116,35 @@ list(
     )
   )
   ,
+  
+  ### POLICY SCENARIOS ####
+  #### calc_rr_975 ####
+  tar_target(
+    calc_rr_975,
+    do_calc_rr_975(
+      mrg_mort_pm25,
+      ## Define the percentile. 1.00 = whole sample
+      threshold = 0.975
+    )
+  )
+  ,
+  #### calc_paf_975 ####
+  tar_target(
+    calc_paf_975,
+    do_calc_paf_975(
+      calc_rr_975
+    )
+  )
+  ,
+  #### calc_an_all_ages_975 ####
+  tar_target(
+    calc_an_all_ages_975,
+    do_calc_an_all_ages_975(
+      calc_paf_975,
+      mrg_mort_pm25
+    )
+  )
+  ,
   ### OUTPUTS ####
   #### plot_mortality_gcc ####
   tar_target(
@@ -137,6 +168,16 @@ list(
     do_plot_pm25_gccs(
       dat_cf,
       plot_extreme_days
+    )
+  )
+  ,
+  #### plot_an_all_ages ####
+  tar_target(
+    plot_an_all_ages,
+    do_plot_an_all_ages(
+      calc_an_all_ages,
+      # calc_an_all_ages_975,
+      mrg_mort_pm25
     )
   )
   ,

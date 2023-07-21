@@ -7,18 +7,14 @@ do_calc_an_all_ages_sum <- function(
   # Attribute 0 to negative values
   an_sum[an_sum < 0] <- 0
   
-  # Round values to 0 decimal places, except for the first column (Year)
+  # Round values to 0 decimal places, except for the first column (date)
   cols_to_round <- names(an_sum)[-1]
-  an_sum[, (cols_to_round) := lapply(.SD, function(x) round(x, digits = 0)), .SDcols = cols_to_round, with = FALSE]
+  an_sum[, (cols_to_round) := lapply(
+    .SD, function(x) round(x, digits = 0)), 
+    .SDcols = cols_to_round]
   
   # Calculate the sum row
   sum_row <- an_sum[, lapply(.SD, sum, na.rm = TRUE), .SDcols = cols_to_round]
-  sum_row <- data.table(Year = "Sum", sum_row)
-  
-  # Set the order of columns in sum_row
-  setcolorder(sum_row, c("Year", names(an_sum)[-1]))
-  
-  # Append the sum row to an_sum
-  an_sum <- rbind(an_sum, sum_row, use.names = FALSE)
-return(an_sum)
+  sum_row <- data.table(date = "Sum", sum_row)
+return(sum_row)
 }

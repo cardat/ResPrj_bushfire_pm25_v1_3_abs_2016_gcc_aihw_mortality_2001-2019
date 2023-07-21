@@ -15,37 +15,37 @@ do_calc_an_all_ages <- function(
   # Create an empty data table to store the result
   an_all_ages_dt <- copy(paf_dt)
   
-  # Compute sum of deaths all cause, all ages, by year by gcc
-  sum_all_ages <- mrg_dat[, .(sum_year_all = sum(
-    avg_doy_all, na.rm = TRUE)), 
-    by = .(year, gcc)]
+  # Obtain unique gccs from the column names
+  gccs <- gsub("_.*", "", names(paf_dt)[-1])
   
-  # Pivot
-  pivoted <- dcast(sum_all_ages, year ~ gcc, value.var = "sum_year_all")
-  
-  # Create a new pivoted table with duplicated columns
-  pivoted_expanded <- data.table(year = pivoted$year)
-  
-  gccs <- unique(mrg_dat$gcc)  # Obtain unique values from the gcc column
-  
+  # Iterate over each gcc
   for (gcc_val in gccs) {
-    dt <- data.table(rr = pivoted[[gcc_val]], 
-                     lb = pivoted[[gcc_val]], 
-                     ub = pivoted[[gcc_val]])
-    setnames(dt, 
-             old = c("rr", "lb", "ub"), 
-             new = c(paste0(gcc_val,"_rr"), 
-                     paste0(gcc_val,"_lb"), 
-                     paste0(gcc_val,"_ub")
-                     )
-             )
-    pivoted_expanded <- cbind(pivoted_expanded, dt)
-  }
-  
-  # multiply columns
-  for (col in names(an_all_ages_dt)[-1]) {
-    an_all_ages_dt[[col]] <- an_all_ages_dt[[col]] * pivoted_expanded[[col]]
+    # Extract data for the current gcc
+    rr_gcc <- paf_dt[, .(date, rr = get(paste0(gcc_val, "_rr")), 
+                        lb = get(paste0(gcc_val, "_lb")), 
+                        ub = get(paste0(gcc_val, "_ub")))]
+    
+    # Extract corresponding avg_doy_all data
+    avg_doy_all <- mrg_dat[mrg_dat$gcc == gcc_val, 
+                                 .(date, avg_doy_all)]
+    
+    # Convert date column from numeric to date format
+    avg_doy_all$date <- as.Date(avg_doy_all$date, origin = "1970-01-01")
+    rr_gcc$date <- as.Date(rr_gcc$date, origin = "1970-01-01")
+    
+    # Merge the rr and avg_doy_all data
+    merged_dt <- merge(rr_gcc, avg_doy_all, by = "date")
+    
+    # Compute the product
+    merged_dt[, `:=` (rr = rr * avg_doy_all, 
+                      lb = lb * avg_doy_all, 
+                      ub = ub * avg_doy_all)]
+    
+    # Replace the values in the original data table
+    for (col in c("rr", "lb", "ub")) {
+      set(an_all_ages_dt, which(an_all_ages_dt$date == merged_dt$date), 
+          paste0(gcc_val, "_", col), merged_dt[[col]])
+    }
   }
   return(an_all_ages_dt)
 }
-
