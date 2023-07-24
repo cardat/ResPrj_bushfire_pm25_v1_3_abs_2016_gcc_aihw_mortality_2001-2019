@@ -10,7 +10,7 @@
 do_calc_rr <- function(
     mrg_dat,
     # Define the percentile. 0.90 will exclude the upper 10th percent
-    threshold = 1.0
+    threshold = 1.00
 ){
   ## Relative risk per 10 pm2.5 unit change (10 μg/m3)
   hrapie = c(1.0123, 1.0045, 1.0201)  # RR, LB, UP respectively

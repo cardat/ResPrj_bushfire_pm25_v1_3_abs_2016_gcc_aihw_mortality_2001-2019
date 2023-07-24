@@ -7,10 +7,10 @@
 # Health outcome: Mortality, all-cause, all ages
 # RR (95% CI) per 10 μg/m3: 1.0123 (1.0045–1.0201)
 
-do_calc_rr_975 <- function(
+do_calc_rr_sens <- function(
     mrg_dat,
     # Define the percentile. 0.90 will exclude the upper 10th percent
-    threshold = 0.975
+    threshold = 0.99
 ){
   ## Relative risk per 10 pm2.5 unit change (10 μg/m3)
   hrapie = c(1.0123, 1.0045, 1.0201)  # RR, LB, UP respectively
@@ -31,7 +31,7 @@ do_calc_rr_975 <- function(
   
   # Create empty data.table to store the results
   # For each gcc we will have 3 columns: rr, lb, and ub
-  rr_975 <- data.table(year = integer())
+  rr_sens <- data.table(year = integer())
   for (gcc_val in gccs) {
     dt <- data.table(
       rr = numeric(), 
@@ -46,7 +46,7 @@ do_calc_rr_975 <- function(
                paste0(gcc_val,"_ub")
              )
     )
-    rr_975 <- cbind(rr_975, dt)
+    rr_sens <- cbind(rr_sens, dt)
   }
   
   # Exclude values above the percentile defined by the threshold
@@ -77,8 +77,8 @@ do_calc_rr_975 <- function(
       year_data[[paste0(gcc_val,"_ub")]] <- ub
     }
     
-    # Add the data for this year to the rr_975 data.table
-    rr_975 <- rbind(rr_975, year_data, fill = TRUE)
+    # Add the data for this year to the rr_sens data.table
+    rr_sens <- rbind(rr_sens, year_data, fill = TRUE)
   }
-  return(rr_975)
+  return(rr_sens)
 }

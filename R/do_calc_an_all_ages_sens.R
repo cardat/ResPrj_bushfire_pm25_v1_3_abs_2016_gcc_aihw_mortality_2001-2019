@@ -1,6 +1,6 @@
 #' # Attributable number out of deaths observed given exposure - all ages
 #'
-#' @param paf_975 
+#' @param paf_sens 
 #' @param mrg_dat 
 #'
 #' @return
@@ -8,12 +8,12 @@
 #'
 #' @examples
 
-do_calc_an_all_ages_975 <- function(
-    paf_975,
+do_calc_an_all_ages_sens <- function(
+    paf_sens,
     mrg_dat
 ){
   # Create an empty data table to store the result
-  an_all_ages_975 <- copy(paf_975)
+  an_all_ages_sens <- copy(paf_sens)
   
   # Compute sum of deaths all cause, all ages, by year by gcc
   sum_all_ages <- mrg_dat[, .(sum_year_all = sum(
@@ -43,9 +43,9 @@ do_calc_an_all_ages_975 <- function(
   }
   
   # multiply columns
-  for (col in names(an_all_ages_975)[-1]) {
-    an_all_ages_975[[col]] <- an_all_ages_975[[col]] * pivoted_expanded[[col]]
+  for (col in names(an_all_ages_sens)[-1]) {
+    an_all_ages_sens[[col]] <- an_all_ages_sens[[col]] * pivoted_expanded[[col]]
   }
-  return(an_all_ages_975)
+  return(an_all_ages_sens)
 }
 

@@ -117,34 +117,34 @@ list(
   # )
   # ,
   # 
-  # ### POLICY SCENARIOS ####
-  # #### calc_rr_975 ####
-  # tar_target(
-  #   calc_rr_975,
-  #   do_calc_rr_975(
-  #     mrg_mort_pm25,
-  #     ## Define the percentile. 1.00 = whole sample
-  #     threshold = 0.975
-  #   )
-  # )
-  # ,
-  # #### calc_paf_975 ####
-  # tar_target(
-  #   calc_paf_975,
-  #   do_calc_paf_975(
-  #     calc_rr_975
-  #   )
-  # )
-  # ,
-  # #### calc_an_all_ages_975 ####
-  # tar_target(
-  #   calc_an_all_ages_975,
-  #   do_calc_an_all_ages_975(
-  #     calc_paf_975,
-  #     mrg_mort_pm25
-  #   )
-  # )
-  # ,
+  ### SENSITIVITY ANALYSIS ####
+  #### calc_rr_sens ####
+  tar_target(
+    calc_rr_sens,
+    do_calc_rr_sens(
+      mrg_mort_pm25,
+      ## Define the percentile. 1.00 = whole sample
+      threshold = 0.99
+    )
+  )
+  ,
+  #### calc_paf_sens ####
+  tar_target(
+    calc_paf_sens,
+    do_calc_paf_sens(
+      calc_rr_sens
+    )
+  )
+  ,
+  #### calc_an_all_ages_sens ####
+  tar_target(
+    calc_an_all_ages_sens,
+    do_calc_an_all_ages_sens(
+      calc_paf_sens,
+      mrg_mort_pm25
+    )
+  )
+  ,
   ### OUTPUTS ####
   #### table_mortality ####
   tar_target(
@@ -192,7 +192,7 @@ list(
     plot_an_all_ages,
     do_plot_an_all_ages(
       calc_an_all_ages,
-      # calc_an_all_ages_975,
+      # calc_an_all_ages_sens,
       mrg_mort_pm25
     )
   )
