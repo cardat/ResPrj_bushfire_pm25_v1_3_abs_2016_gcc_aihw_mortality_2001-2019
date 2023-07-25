@@ -124,7 +124,7 @@ list(
     do_calc_rr_sens(
       mrg_mort_pm25,
       ## Define the percentile. 1.00 = whole sample
-      threshold = 0.99
+      threshold = 0.95
     )
   )
   ,
@@ -133,7 +133,8 @@ list(
     calc_paf_sens,
     do_calc_paf_sens(
       calc_rr_sens
-    )
+    ),
+    cue = tar_cue(mode = "always")
   )
   ,
   #### calc_an_all_ages_sens ####
@@ -142,7 +143,17 @@ list(
     do_calc_an_all_ages_sens(
       calc_paf_sens,
       mrg_mort_pm25
-    )
+    ),
+    cue = tar_cue(mode = "always")
+  )
+  ,
+  #### calc_an_all_ages_sens_sum ####
+  tar_target(
+    calc_an_all_ages_sens_sum,
+    do_calc_an_all_ages_sens_sum(
+      calc_an_all_ages_sens
+    ),
+    cue = tar_cue(mode = "always")
   )
   ,
   ### OUTPUTS ####
@@ -192,7 +203,7 @@ list(
     plot_an_all_ages,
     do_plot_an_all_ages(
       calc_an_all_ages,
-      # calc_an_all_ages_sens,
+      calc_an_all_ages_sens,
       mrg_mort_pm25
     )
   )

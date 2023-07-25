@@ -76,6 +76,10 @@ do_calc_rr <- function(
     
     # Add the data for this date to the rr_dt data.table
     rr_dt <- rbind(rr_dt, date_data, fill = TRUE)
-  }
+    
+    # When rr < 1 assign 1 (RR can't be a protective factor in this case, as it 
+    # wouldn't change mortality rates)
+    rr_dt[rr_dt < 1] <- 1
+    }
   return(rr_dt)
 }

@@ -10,7 +10,7 @@
 do_calc_rr_sens <- function(
     mrg_dat,
     # Define the percentile. 0.90 will exclude the upper 10th percent
-    threshold = 0.99
+    threshold = 0.95
 ){
   ## Relative risk per 10 pm2.5 unit change (10 μg/m3)
   hrapie = c(1.0123, 1.0045, 1.0201)  # RR, LB, UP respectively
@@ -27,11 +27,10 @@ do_calc_rr_sens <- function(
             "6GHOB", 
             "7GDAR", 
             "8ACTE")
-  years <- 2001:2020
   
   # Create empty data.table to store the results
   # For each gcc we will have 3 columns: rr, lb, and ub
-  rr_sens <- data.table(year = integer())
+  rr_sens <- data.table(date = as.Date(character()))
   for (gcc_val in gccs) {
     dt <- data.table(
       rr = numeric(), 
@@ -49,36 +48,48 @@ do_calc_rr_sens <- function(
     rr_sens <- cbind(rr_sens, dt)
   }
   
-  # Exclude values above the percentile defined by the threshold
+  # Assign NA above threshold
   exclusion_value <- quantile(mrg_dat$pm25_pred, threshold, na.rm = TRUE)
-  mrg_dat <- mrg_dat[mrg_dat$pm25_pred <= exclusion_value,]
+  cols_to_na <- c("remainder", "seasonal", "trend", "cf", "delta", 
+                  "threshold", "good", "moderate", "unhealthy_sensitive",
+                  "unhealthy", "very_unhealthy", "hazardous", "extreme")
+  mrg_dat[mrg_dat$pm25_pred > exclusion_value, (cols_to_na) := NA]
   
-  # Iterate through years
-  for (year_val in years) {
-    # Initialize a list to store the data for this year
-    year_data <- list(year = year_val)
+  
+  # Iterate through unique dates
+  for(date_val in unique(mrg_dat$date)) {
+    
+    # Initialize a list to store the data for this date
+    date_data <- list(date = as.Date(date_val, origin = "1970-01-01"))
     
     # Iterate through gccs
     for (gcc_val in gccs) {
-      # Filter the data for the current gcc and year
-      dat <- mrg_dat[gcc == gcc_val & year == year_val]
+      # Filter the data for the current gcc and date
+      dat <- mrg_dat[gcc == gcc_val & date == date_val]
       
-      # Compute the mean of "delta" for the current gcc and year
-      mean_delta_year <- mean(dat$delta)
+      # If dat$delta is NA, rr, lb and ub should be NA as well
+      if (is.na(dat$delta)) {
+        rr <- lb <- ub <- NA
+      } else {
+        # Estimate rr, lb and ub using the formula
+        rr <- exp(beta[1] * dat$delta)
+        lb <- exp(beta[2] * dat$delta)
+        ub <- exp(beta[3] * dat$delta)
+      }
       
-      # Estimate rr, lb and ub using the formula
-      rr <- exp(beta[1] * mean_delta_year)
-      lb <- exp(beta[2] * mean_delta_year)
-      ub <- exp(beta[3] * mean_delta_year)
-      
-      # Add the data for this gcc to the year_data list
-      year_data[[paste0(gcc_val,"_rr")]] <- rr
-      year_data[[paste0(gcc_val,"_lb")]] <- lb
-      year_data[[paste0(gcc_val,"_ub")]] <- ub
+      # Add the data for this gcc to the date_data list
+      date_data[[paste0(gcc_val,"_rr")]] <- rr
+      date_data[[paste0(gcc_val,"_lb")]] <- lb
+      date_data[[paste0(gcc_val,"_ub")]] <- ub
     }
     
-    # Add the data for this year to the rr_sens data.table
-    rr_sens <- rbind(rr_sens, year_data, fill = TRUE)
+    # Add the data for this date to the rr_sens data.table
+    rr_sens <- rbind(rr_sens, date_data, fill = TRUE)
+    
+    # When rr < 1 assign 1 (RR can't be a protective factor in this case, as it 
+    # wouldn't change mortality rates)
+    rr_sens[!is.na(rr_sens) & rr_sens < 1] <- 1
   }
   return(rr_sens)
 }
+
