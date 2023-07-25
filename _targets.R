@@ -133,8 +133,7 @@ list(
     calc_paf_sens,
     do_calc_paf_sens(
       calc_rr_sens
-    ),
-    cue = tar_cue(mode = "always")
+    )
   )
   ,
   #### calc_an_all_ages_sens ####
@@ -143,8 +142,7 @@ list(
     do_calc_an_all_ages_sens(
       calc_paf_sens,
       mrg_mort_pm25
-    ),
-    cue = tar_cue(mode = "always")
+    )
   )
   ,
   #### calc_an_all_ages_sens_sum ####
@@ -152,8 +150,7 @@ list(
     calc_an_all_ages_sens_sum,
     do_calc_an_all_ages_sens_sum(
       calc_an_all_ages_sens
-    ),
-    cue = tar_cue(mode = "always")
+    )
   )
   ,
   ### OUTPUTS ####

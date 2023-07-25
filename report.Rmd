@@ -1,0 +1,129 @@
+---
+title: "Increased risks of mortality in the 21st century (2001-2020) attributable
+  to PM₂.₅ in Australian Great Capital Cities"
+output:
+  word_document: default
+  html_document:
+    keep_md: yes
+    fig_path: report/
+    md_document:
+      variant: markdown_strict
+      path: report/
+---
+Lucas Hertzog<sup>1,2</sup>, Edward Jegasothy<sup>3</sup>, Karthik Gopi<sup>3,4</sup>, Cassandra Yuen<sup>1,3</sup>, Dana Jordan<sup>3</sup>, Geoffrey Morgan<sup>3,4</sup>, Ivan Hanigan<sup>1,2</sup>
+
+1. School of Population Health, Faculty of Health Sciences, Curtin University, WA 6102, Australia
+2. WHO Collaborating Centre for Climate Change and Health Impact Assessment, WA 6102, Australia
+3. School of Public Health, Faculty of Medicine and Health, University of Sydney, Camperdown, NSW 2006, Australia 
+4. University Centre for Rural Health, Faculty of Medicine and Health, University of Sydney, Lismore, NSW 2480, Australia
+
+## Study area
+```{r, echo=FALSE}
+
+a <- "figures_and_tables/fig_study_area.png"
+
+# Include the plot in the report
+knitr::include_graphics(a)
+```
+
+## Outcome
+### Average Daily Mortality 2001-2020 (AIHW all causes and ages)
+
+```{r, echo=FALSE}
+aihw <- "figures_and_tables/fig_mortality.png"
+knitr::include_graphics(aihw)
+
+```
+
+```{r, echo=FALSE}
+mort <- targets::tar_read(tab_mortality)
+# Create the table with kable
+knitr::kable(
+  mort, 
+  caption = 
+    "Summary of study cities and number of deaths from 2001 to 2020"
+  )
+```
+
+## Exposure
+```{r, echo=FALSE}
+exposure <- targets::tar_read(tab_exposure)
+# Create the table with kable
+knitr::kable(
+  exposure, 
+  caption = 
+    "Summary  in number of days per air quality level. The ratio represents the sum of all days with PM₂.₅ (µg/m³) levels not considered good by WHO divided by days considered good. GCCs are ranked from best to worst ratio."
+  )
+```
+
+### PM₂.₅ (µg/m³) time-series 2001-2020
+```{r, echo=FALSE}
+
+p <- "figures_and_tables/fig_exposure_time_series.png"
+
+# Include the plot in the report
+knitr::include_graphics(p)
+```
+
+## Methods
+PM₂.₅ Predicted = Daily PM2.5 predictions from the random forest model (Bushfire_specific_PM25_Aus_2001_2020_v1_3).
+
+The STL method is used to decompose the time-series into three components: trend, seasonal, and remainder.
+
+The counterfactual is calculated as the sum of the seasonal and trend components, i.e., Counterfactual = Seasonal + Trend.
+
+Following the HRAPIE project's recommendations for concentration–response functions for cost–benefit analysis of particulate matter, the estimated Relative Risk (RR) per 10 μg/m³ increase in PM₂.₅ is 1.0123, with a 95% Confidence Interval (CI) of 1.0045 to 1.0201:
+
+$$
+RR_{10\, \mu g/m^3} = 1.0123 \, (95\% \, CI: 1.0045 - 1.0201)
+$$
+Then, we calculate beta:
+
+$$
+\beta = \frac{\log(RR_{10\, \mu g/m^3})}{10}
+$$
+
+Subsequently, we define the delta as the difference between the PM₂.₅ predicted value and the counterfactual:
+
+$$
+\Delta = (PM₂.₅_{\text{predicted}}) - (\text{Counterfactual})
+$$
+
+Finally, we calculate the relative risk as the exponential of the product of beta and the mean of the yearly delta:
+
+$$
+\text{Relative Risk} = \exp \left( \beta \times \Delta_{\text{daily}} \right)
+$$
+PAF:
+
+
+## Results
+
+```{r echo=FALSE}
+an_sum <- targets::tar_read(calc_an_all_ages_sum)
+knitr::kable(an_sum, 
+             caption = "Attributable Number - Sum" )
+```
+
+
+```{r, echo=FALSE}
+
+an <- "figures_and_tables/fig_an_100.png"
+knitr::include_graphics(an)
+```
+
+## Sensitivity analysis
+### 95th percentile
+
+```{r, echo=FALSE}
+an_sens <- targets::tar_read(calc_an_all_ages_sens_sum)
+knitr::kable(an_sens, 
+             caption = "Attributable Number (95th percentile)" )
+```
+
+```{r, echo=FALSE}
+
+an <- "figures_and_tables/fig_an_100_sens.png"
+knitr::include_graphics(an)
+```
+

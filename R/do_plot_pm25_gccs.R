@@ -17,19 +17,19 @@ do_plot_pm25_gccs <- function(
   )
   
   do_plot_extreme_days(
-    pm25, gcc_title = "Sydney", gcc = "1GSYD", yarea = c(0, 90))
+    pm25, gcc_title = "Sydney", gcc = "1GSYD", yarea = c(0, 170))
   do_plot_extreme_days(
-    pm25,gcc_title = "Melbourne", gcc = "2GMEL", yarea = c(0, 80))
+    pm25,gcc_title = "Melbourne", gcc = "2GMEL", yarea = c(0, 130))
   do_plot_extreme_days(
-    pm25,gcc_title = "Brisbane", gcc = "3GBRI", yarea = c(0, 80))
+    pm25,gcc_title = "Brisbane", gcc = "3GBRI", yarea = c(0, 120))
   do_plot_extreme_days(
     pm25,gcc_title = "Adelaide", gcc = "4GADE", yarea = c(0, 40))
   do_plot_extreme_days(
-    pm25,gcc_title = "Perth", gcc = "5GPER", yarea = c(0, 50))
+    pm25,gcc_title = "Perth", gcc = "5GPER", yarea = c(0, 45))
   do_plot_extreme_days(
-    pm25,gcc_title = "Hobart", gcc = "6GHOB", yarea = c(0, 60))
+    pm25,gcc_title = "Hobart", gcc = "6GHOB", yarea = c(0, 55))
   do_plot_extreme_days(
-    pm25,gcc_title = "Darwin", gcc = "7GDAR", yarea = c(0, 50))
+    pm25,gcc_title = "Darwin", gcc = "7GDAR", yarea = c(0, 45))
   do_plot_extreme_days(
     pm25,gcc_title = "Canberra", gcc = "8ACTE", yarea = c(0, 500))
   

@@ -103,7 +103,7 @@ do_tab_exposure <- function(
   tab_exposure[, Sum := rowSums(.SD), .SDcols = -c("City", "good")]
   
   # Add a column that contains the ratio of the Sum and "good" column values
-  tab_exposure[, Ratio := Sum / good]
+  tab_exposure[, Ratio := round(Sum / good, 2)]
   
   # Delete the "Sum" column
   tab_exposure[, Sum := NULL]

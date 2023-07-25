@@ -117,14 +117,14 @@ do_plot_an_all_ages <- function(
   an_all_ages_sens[, ub := rowSums(.SD[, grepl("_ub", names(.SD)), with = FALSE], na.rm = TRUE)]
   
   # Plotting
-  plot(an_all_ages_dt$year, an_all_ages_dt$rr, type = "l", col = "forestgreen",
+  plot(an_all_ages_dt$year, an_all_ages_dt$rr, type = "l", col = "red",
        xlab = "Year", ylab = "Deaths", main = "",
        xlim = range(an_all_ages_dt$year), ylim = c(0, max(an_all_ages_dt$ub, an_all_ages_sens$ub, na.rm = TRUE)),
        xaxt = "n")
   
   # Add shaded area for LB and UB for an_all_ages_dt
   polygon(c(an_all_ages_dt$year, rev(an_all_ages_dt$year)), c(an_all_ages_dt$lb, rev(an_all_ages_dt$ub)),
-          col = adjustcolor("forestgreen", alpha.f = 0.2),
+          col = adjustcolor("red", alpha.f = 0.2),
           border = NA)
   
   # Add second line and polygon for an_all_ages_sens
@@ -138,13 +138,14 @@ do_plot_an_all_ages <- function(
   
   # Add legend
   legend("topleft",
-         legend = c("Estimated number of premature deaths associated with PM₂.₅ exposure ", "95% CI"),
-         lty = c(1, 1),
-         col = c("red", adjustcolor("red", alpha.f = 0.2)),
-         lwd = c(1, 5),
+         legend = c("Estimated number of premature deaths associated with PM₂.₅ exposure ", 
+                    "95% CI",
+                    "Sensitivity Analysis (95th percentile)",
+                    "95% CI"),
+         lty = c(1, 1, 1, 1),
+         col = c("red", adjustcolor("red", alpha.f = 0.2), "blue", adjustcolor("blue", alpha.f = 0.2)),
+         lwd = c(1, 5, 1, 5),
          bty = "n")
-  
-
   dev.off()
 }
 
