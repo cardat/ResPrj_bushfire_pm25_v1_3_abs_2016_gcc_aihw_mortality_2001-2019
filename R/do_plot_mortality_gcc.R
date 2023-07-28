@@ -3,6 +3,9 @@ do_plot_mortality_gcc <- function(
 ){
   png("figures_and_tables/fig_mortality.png", res = 250, height = 3840, width = 2160)
   
+  # Remove data for December 2019
+  sim_obs <- sim_obs[!(format(sim_obs$date, "%Y-%m") == "2019-12")]
+  
   syd <- sim_obs[gcc == "1GSYD"]
   mel <- sim_obs[gcc == "2GMEL"]
   bri <- sim_obs[gcc == "3GBRI"]

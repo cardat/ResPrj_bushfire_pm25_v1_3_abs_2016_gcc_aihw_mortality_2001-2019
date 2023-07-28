@@ -1,14 +1,9 @@
 ---
-title: "Increased risks of mortality in the 21st century (2001-2020) attributable
-  to PM₂.₅ in Australian Great Capital Cities"
+title: "Increased risks of mortality in the 21st century (2001-2020) attributable to PM₂.₅ in Australian Great Capital Cities"
 output:
   word_document: default
   html_document:
     keep_md: yes
-    fig_path: report/
-    md_document:
-      variant: markdown_strict
-      path: report/
 ---
 Lucas Hertzog<sup>1,2</sup>, Edward Jegasothy<sup>3</sup>, Karthik Gopi<sup>3,4</sup>, Cassandra Yuen<sup>1,3</sup>, Dana Jordan<sup>3</sup>, Geoffrey Morgan<sup>3,4</sup>, Ivan Hanigan<sup>1,2</sup>
 
@@ -47,8 +42,16 @@ knitr::kable(
 
 ## Exposure
 ```{r, echo=FALSE}
+expo_sum <- targets::tar_read(tab_exposure_summary)
+knitr::kable(
+  expo_sum, 
+  caption = 
+    "Summary  of estimated daily PM₂.₅ (µg/m³) in eight Australian Great Capital City areas from 2001 to 2020"
+  )
+```
+
+```{r, echo=FALSE}
 exposure <- targets::tar_read(tab_exposure)
-# Create the table with kable
 knitr::kable(
   exposure, 
   caption = 
@@ -92,15 +95,24 @@ $$
 Finally, we calculate the relative risk as the exponential of the product of beta and the mean of the yearly delta:
 
 $$
-\text{Relative Risk} = \exp \left( \beta \times \Delta_{\text{daily}} \right)
+\text{RR} = \exp \left( \beta \times \Delta_{\text{daily}} \right)
 $$
-PAF:
 
+The formula for calculating the attributable fraction is given by:
+
+$$
+\text{AF}_{\text{exposed}} = \frac{\text{RR} - 1}{\text{RR}} \times \text{N}
+$$
+
+Where:
+- \(\text{AF}_{\text{exposed}}\) represents the attributable fraction in the exposed population.
+- \(\text{RR}\) is the relative risk.
+- \(\text{N}\) is the average number of all cause deaths for all ages based on a three-year interval for each day of the year.
 
 ## Results
 
 ```{r echo=FALSE}
-an_sum <- targets::tar_read(calc_an_all_ages_sum)
+an_sum <- targets::tar_read(tab_an)
 knitr::kable(an_sum, 
              caption = "Attributable Number - Sum" )
 ```
@@ -112,11 +124,18 @@ an <- "figures_and_tables/fig_an_100.png"
 knitr::include_graphics(an)
 ```
 
+
+```{r echo=FALSE}
+an_sum <- targets::tar_read(tab_scale)
+knitr::kable(an_sum, 
+             caption = "Attributable Number - Scaled" )
+```
+
 ## Sensitivity analysis
 ### 95th percentile
 
 ```{r, echo=FALSE}
-an_sens <- targets::tar_read(calc_an_all_ages_sens_sum)
+an_sens <- targets::tar_read(tab_an_sens)
 knitr::kable(an_sens, 
              caption = "Attributable Number (95th percentile)" )
 ```
@@ -127,3 +146,8 @@ an <- "figures_and_tables/fig_an_100_sens.png"
 knitr::include_graphics(an)
 ```
 
+```{r echo=FALSE}
+an_sum <- targets::tar_read(tab_scale_sens)
+knitr::kable(an_sum, 
+             caption = "Attributable Number - Scaled" )
+```

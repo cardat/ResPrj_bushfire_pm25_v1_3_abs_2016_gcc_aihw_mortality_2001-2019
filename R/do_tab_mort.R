@@ -1,5 +1,5 @@
 do_tab_mort <- function(
-    sim_obs
+    mrg_dat
 ){
   
   # Create a named vector to map the codes to the actual city names
@@ -13,8 +13,11 @@ do_tab_mort <- function(
                   "8ACTE" = "Canberra")
   
   # Create the new data table without the gcc column
-  tab_mortality <- sim_obs[, .(
-    City = city_names[gcc], 
+  tab_mortality <- mrg_dat[, .(
+    City = city_names[gcc],
+    `Population (2016)` = format(
+      unique(pop),
+      big.mark = ","),
     Deaths = format(
       round(
         sum(

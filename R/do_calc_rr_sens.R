@@ -50,10 +50,15 @@ do_calc_rr_sens <- function(
   
   # Assign NA above threshold
   exclusion_value <- quantile(mrg_dat$pm25_pred, threshold, na.rm = TRUE)
-  cols_to_na <- c("remainder", "seasonal", "trend", "cf", "delta", 
-                  "threshold", "good", "moderate", "unhealthy_sensitive",
-                  "unhealthy", "very_unhealthy", "hazardous", "extreme")
-  mrg_dat[mrg_dat$pm25_pred > exclusion_value, (cols_to_na) := NA]
+  # cols_to_na <- c("remainder", "seasonal", "trend", "cf", "delta", 
+  #                 "threshold", "good", "moderate", "unhealthy_sensitive",
+  #                 "unhealthy", "very_unhealthy", "hazardous", "extreme")
+
+  mrg_dat[mrg_dat$pm25_pred > exclusion_value]
+  
+  # Set mrg_dat$delta to 0 if mrg_dat$pm25_pred is > exclusion_value
+  # delta = 0 means pm25_pred = cf, because delta = pm25_pred-cf
+  mrg_dat$delta[mrg_dat$pm25_pred > exclusion_value] <- 0
   
   
   # Iterate through unique dates

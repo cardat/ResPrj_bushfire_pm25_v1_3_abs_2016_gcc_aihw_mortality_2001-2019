@@ -107,16 +107,6 @@ list(
     )
   )
   ,
-  # #### calc_scale_per_capita ####
-  # tar_target(
-  #   calc_scale_per_capita,
-  #   do_calc_scale_per_capita(
-  #     calc_an_all_ages,
-  #     mrg_mort_pm25
-  #   )
-  # )
-  # ,
-  # 
   ### SENSITIVITY ANALYSIS ####
   #### calc_rr_sens ####
   tar_target(
@@ -154,19 +144,61 @@ list(
   )
   ,
   ### OUTPUTS ####
-  #### table_mortality ####
+  #### tab_mortality ####
   tar_target(
     tab_mortality,
     do_tab_mort(
-      dat_mort_aihw_simulated_2020
+      mrg_mort_pm25
     )
   )
   ,
-  #### table_exposure ####
+  #### tab_exposure ####
   tar_target(
     tab_exposure,
     do_tab_exposure(
       dat_cf
+    )
+  )
+  ,
+  #### tab_exposure_summary ####
+  tar_target(
+    tab_exposure_summary,
+    do_tab_exposure_summary(
+      dat_cf
+    )
+  )
+  ,
+  #### tab_an ####
+  tar_target(
+    tab_an,
+    do_tab_an(
+      calc_an_all_ages_sum
+    )
+  )
+  ,
+  #### tab_an_sens ####
+  tar_target(
+    tab_an_sens,
+    do_tab_an_sens(
+      calc_an_all_ages_sens_sum
+    )
+  )
+  ,
+  #### tab_scale ####
+  tar_target(
+    tab_scale,
+    do_tab_scale(
+      calc_an_all_ages_sum,
+      mrg_mort_pm25
+    )
+  )
+  ,
+  #### tab_scale_sens ####
+  tar_target(
+    tab_scale_sens,
+    do_tab_scale_sens(
+      calc_an_all_ages_sens_sum,
+      mrg_mort_pm25
     )
   )
   ,
@@ -195,7 +227,17 @@ list(
     )
   )
   ,
+  #### plot_an ####
+  tar_target(
+    plot_an,
+    do_plot_an(
+      calc_an_all_ages,
+      mrg_mort_pm25
+    )
+  )
+  ,
   #### plot_an_all_ages ####
+  # plot with sensitivity analysis #
   tar_target(
     plot_an_all_ages,
     do_plot_an_all_ages(
