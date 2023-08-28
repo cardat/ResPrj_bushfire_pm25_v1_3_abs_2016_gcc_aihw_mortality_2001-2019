@@ -1,7 +1,7 @@
 load_mort_aihw <- function(
     dir
 ){
-  dly_gcc <- read.csv(file = file.path(config$indir_aihw, config$dly_all_gcc))
+  dly_gcc <- fread(file.path(config$indir_aihw, config$dly_all_gcc))
   
   dly_gcc <- as.data.table(dly_gcc)
   obs <- dly_gcc[, .(all = sum(deaths[age == "All ages"]),

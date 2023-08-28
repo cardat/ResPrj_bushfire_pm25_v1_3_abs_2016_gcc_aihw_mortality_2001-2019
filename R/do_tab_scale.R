@@ -16,7 +16,7 @@ do_tab_scale <- function(
   subset_pop_pivot[, `All GCCs` := rowSums(.SD, na.rm = TRUE)]
   
   # Copy the 'an' dataframe to 'scaled'
-  scaled <- copy(an)
+  scaled = an
   
   # Get the city codes
   city_codes <- c("1GSYD", "2GMEL", "3GBRI", "4GADE", "5GPER", "6GHOB", "7GDAR", "8ACTE", "All GCCs")
