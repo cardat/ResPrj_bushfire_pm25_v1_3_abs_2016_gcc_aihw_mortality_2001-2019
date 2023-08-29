@@ -220,6 +220,14 @@ list(
   ,
   #### plot_pm25_gccs ####
   tar_target(
+    plot_pm25_nepm,
+    do_plot_pm25_nepm(
+      mrg_mort_pm25
+    )
+  )
+  ,
+  #### plot_pm25_gccs ####
+  tar_target(
     plot_pm25_gccs,
     do_plot_pm25_gccs(
       dat_cf,

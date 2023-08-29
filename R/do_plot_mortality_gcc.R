@@ -1,10 +1,15 @@
 do_plot_mortality_gcc <- function(
     sim_obs
 ){
-  png("figures_and_tables/fig_mortality.png", res = 250, height = 3840, width = 2160)
+  # png("figures_and_tables/fig_mortality.png", res = 250, height = 3840, width = 2160)
+  pdf("figures_and_tables/fig_mortality_doy.pdf", width = 9.5, height = 16.889)
+  
+  # sim_obs=dat_mort_aihw_simulated_2020
   
   # Remove data for December 2019
   sim_obs <- sim_obs[!(format(sim_obs$date, "%Y-%m") == "2019-12")]
+  
+  par(family = "Arial Narrow")
   
   syd <- sim_obs[gcc == "1GSYD"]
   mel <- sim_obs[gcc == "2GMEL"]
@@ -15,9 +20,23 @@ do_plot_mortality_gcc <- function(
   dar <- sim_obs[gcc == "7GDAR"]
   act <- sim_obs[gcc == "8ACTE"]
   
-  gccs <- c("act", "ade", "bri", "dar", "hob", "mel", "per", "syd")
-  titles <- c("Australian Capital Territory", "Adelaide", "Brisbane", 
-              "Darwin", "Hobart", "Melbourne", "Perth", "Sydney")
+  gccs <- c("syd",
+            "mel",
+            "bri",
+            "ade",
+            "per",
+            "hob",
+            "dar",
+            "act")
+  titles <- c("Sydney",
+              "Melbourne",
+              "Brisbane",
+              "Adelaide",
+              "Perth",
+              "Hobart",
+              "Darwin",
+              "Australian Capital Territory")
+  
   
   par(mfrow = c(length(gccs), 1),
       mar = c(0.2, 2, 0.2, 0.2),

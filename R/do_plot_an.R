@@ -3,10 +3,12 @@ do_plot_an <- function(
     mrg_dat
 ){
 
-png("figures_and_tables/fig_an_100.png", res = 250, height = 1080, width = 1920)
+# png("figures_and_tables/fig_an_100.png", res = 250, height = 1080, width = 1920)
+
+pdf("figures_and_tables/fig_an_100.pdf", width = 16.889 , height = 9.5)
 
 par(
-  family = "Cambria",
+  family = "Calibri",
   mar = c(2, 4, 1, 1),
   mgp = c(3, 1, 0),
   oma = c(0, 0, 0, 0),
