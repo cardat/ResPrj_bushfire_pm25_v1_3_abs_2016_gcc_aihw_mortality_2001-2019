@@ -88,3 +88,26 @@ do_plot_extreme_days <- function(
   
   return(p)
 }
+
+
+
+# # EDA
+# # Define exclusion values
+# values <- c(13.77264, 11.04631, 8.248542, 6.263855)
+# names(values) <- c(".95", ".90", ".75", ".50")
+# 
+# # Your existing plot code
+# p <- plot(x = range(qc4$date),
+#           y = c(0, 100),
+#           type = "n",
+#           xlab = "",
+#           ylab = "PM₂.₅ (µg/m³)",
+#           xaxt = "n",
+#           ylim = yarea
+# )
+# 
+# # Adding horizontal lines for each exclusion value
+# for (value_name in names(values)) {
+#   value <- values[value_name]
+#   abline(h = value, col = "red", lty = 2)
+# }

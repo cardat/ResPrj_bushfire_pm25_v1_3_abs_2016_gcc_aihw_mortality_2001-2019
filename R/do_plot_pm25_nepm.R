@@ -7,10 +7,10 @@ do_plot_pm25_nepm <- function(
 ){
   # png("figures_and_tables/fig_pm25_nepm.png", res = 250, height = 3840, width = 2160)
   
-  pdf("figures_and_tables/fig_pm25_nepm.pdf", width = 9.5, height = 16.889)
+  pdf("figures_and_tables/fig_pm25_nepm.pdf", width = 8.3, height = 11.7)
   
   # Set the font to Cambria
-  par(family = "Cambria")
+  par(family = "Arial Narrow")
   
   # Sample data preparation
   # pm25 = mrg_mort_pm25
@@ -45,7 +45,7 @@ do_plot_pm25_nepm <- function(
   
   # Set up the plotting area
   par(mfrow = c(length(gccs) + 1, 1),
-      mar = c(0.2, 6, 0.2, 0.2), # c(bottom, left, top, right)
+      mar = c(0.4, 5, 0.4, 0.4), # c(bottom, left, top, right)
       mgp = c(2.5, 1, 0), # c(axis_title, axis_labels, axis_line)
       las = 1,
       cex.axis = 0.8,
@@ -67,15 +67,25 @@ do_plot_pm25_nepm <- function(
     # Remove rows with NA or infinite values
     pm25 <- pm25[!is.na(pm25$date) & !is.na(pm25$pm25_pred),]
     
+    # Define xlim and ylim
+    xlim_range <- c(as.numeric(as.Date("2001-01-01")), as.numeric(as.Date("2020-12-31")))
+    ylim_range <- c(0, max(pm25$pm25_pred, na.rm = TRUE))
+    
+    plot(0, type = "n", xlim = xlim_range, ylim = ylim_range, 
+         xaxt = "n", ylab = "", xlab = "", main = "", yaxs = "i", xaxs = "i")
+    
+    # Manually set the plotting region to remove extra space
+    usr <- par("usr")
+    par(usr = c(as.numeric(as.Date("2001-01-01")), as.numeric(as.Date("2020-12-31")), usr[3], usr[4]))
+  
     if (i == length(gccs)) {
-      plot(0, type = "n", xlim = range(as.numeric(pm25$date)), ylim = c(0, max(pm25$pm25_pred, na.rm = TRUE)), 
-           ylab = "", xlab = "", xaxt = "n", main = "")
-      axis(1, at = as.numeric(seq(from = min(pm25$date), to = max(pm25$date), by = "year")), 
-           labels = format(seq(from = min(pm25$date), to = max(pm25$date), by = "year"), "%Y"))
-    } else {
-      plot(0, type = "n", xlim = range(as.numeric(pm25$date)), ylim = c(0, max(pm25$pm25_pred, na.rm = TRUE)), 
-           xaxt = "n", ylab = "", xlab = "", main = "")
+      axis(1, at = as.numeric(seq(from = as.Date("2001-01-01"), to = as.Date("2020-12-31"), by = "year")), 
+           labels = format(seq(from = as.Date("2001-01-01"), to = as.Date("2020-12-31"), by = "year"), "%Y"))
     }
+    
+    # Add vertical grid lines for each year
+    years <- seq(from = min(pm25$date), to = max(pm25$date), by = "year")
+    abline(v = as.numeric(years), col = "lightgray", lty = "dotted")
     
     # First, draw the #CCCC99 segments
     segments(as.numeric(pm25$date[pm25$pm25_pred <= 25]), 
@@ -104,13 +114,12 @@ do_plot_pm25_nepm <- function(
     # For the black line with dashed line type
     abline(h = 25, col = "black", lty = 2, lwd = 1.5)
     
-    # Add vertical grid lines for each year
-    years <- seq(from = min(pm25$date), to = max(pm25$date), by = "year")
-    abline(v = as.numeric(years), col = "lightgray", lty = "dotted")
+     # Add a box around the plot
+    box(col = "black", lwd = 1)
     
     if (i == 4) {
       mean_point <- mean(par("usr")[3:4])
-      text(par("usr")[1]-500, mean_point, labels = "PM₂.₅ (µg/m³)", xpd = TRUE, srt = 90, cex = 1.8)  
+      text(par("usr")[1]-400, mean_point, labels = "PM₂.₅ (µg/m³)", xpd = TRUE, srt = 90, cex = 1.8)  
     }
   }
   # Legend plot

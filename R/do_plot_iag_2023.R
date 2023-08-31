@@ -2,110 +2,131 @@ do_plot_iag_2023 <- function(
     sim_obs,
     pm25
 ){
-  
-  mel_mort <- dat_mort_aihw_simulated_2020[date >= as.Date("2008-11-01") & date <= as.Date("2009-04-30") & gcc == "2GMEL"]
-  
-  par(
-    mfrow = c(1, 1),
-    mar = c(0.2, 2, 0.2, 0.2),
-    mgp = c(2.5, 1, 0),
-    oma = c(4, 4, 0, 0),
-    las = 1,
-    cex.axis = 0.8,
-    cex.lab = 1
-  )
-  
-  plot(
-    avg_doy_all ~ doy, mel_mort,
-    pch = 19, col = grey(0.8), cex = 0.5,
-    ylab = "Daily deaths", xlab = "Day of the year", main = ""
-  )
-  
-  lines(
-    1:180, tapply(mel_mort$avg_doy_all, mel_mort$doy, mean),
-    lwd = 1.5, col = 4
-  )
-  
-  # Add horizontal and vertical grid lines
-  grid(nx = NULL, ny = NULL, lty = "dashed", col = "grey")
-  
-  # Add x-axis label
-  mtext("Day of the Year", side = 1, line = 2, outer = TRUE)
-  
-  # Calculate the mean point
-  mean_point <- mean(par("usr")[3:4])
-  # Insert y-axis label
-  text(
-    par("usr")[1] - 20, mean_point, labels = "Daily deaths",
-    xpd = NA, srt = 90, cex = 1.8
-  )
-  
-  
-
-
-## qc one month one gcc
-
-## subset black saturday bushfire events - 6 months
-
-
 ## gcc and date
-qc4 <- dat_cf[date >= as.Date("2002-11-01") & date <= as.Date("2003-04-30") & gcc_code16 == "5GPER"]
+qc4 <- dat_cf[date >= as.Date("2002-11-01") & date <= as.Date("2003-04-30") & gcc_code16 == "1GSYD"]
   
 ## set a treshold 2 standard deviations from the remainder days
-threshold <- sd(qc$remainder) * 2
+qc4[, threshold := sd(remainder) * 2]
 
-# Create the "avoidable" variable and assign pm25_pred values
+# # Create the "avoidable" variable and assign pm25_pred values
 qc4[, avoidable := ifelse(
-  pm25_pred > (seasonal + trend) & 
-    pm25_pred < threshold,
+  pm25_pred > (cf) &
+    pm25_pred < (cf + threshold),
   pm25_pred, NA)]
 
 ## set a binary variable, yes or no extreme smoke day based on cf + treshold
 qc4$extreme_smoke_day <- ifelse(
-  qc4$pm25_pred >= (qc4$seasonal + qc4$trend + threshold), 1, 0)
+  qc4$pm25_pred >= (qc4$cf + qc4$threshold), 1, 0)
 
 qc4$extreme_smoke <- ifelse(
   qc4$extreme_smoke_day == 1, qc4$remainder, NA)
 
+# # Create the "avoidable" variable and assign pm25_pred values
+qc4[, good := ifelse(
+  pm25_pred < (cf),
+  pm25_pred, NA)]
+
+## terrible days
+qc4[, terrible := ifelse(
+  pm25_pred >= (cf + threshold),
+  pm25_pred, NA)]
+
+# colours
+col1 <- do.call(rgb,c(as.list(col2rgb("forestgreen")),alpha=255/2.5,max=255))
+col2 <- do.call(rgb,c(as.list(col2rgb("red")),alpha=255/2.5,max=255))
+
+# margins
+par(
+  mar=c(2, 4, 3, 2),
+  mgp=c(3,1,0),
+  oma = c(0, 0, 0, 4),
+  las=1,
+  cex.axis=0.9,
+  cex.lab=1,
+  family ="Cambria")
 
 ## start the plot
 with(qc4, plot(
   date,
   pm25_pred,
-  type = 'b',
-  ylim = c(0,100),
-  main = "Perth - Nov 2002 to Apr 2003"
+  type = "p",
+  bty = "l",
+  pch = 20,
+  ylim = c(0,50),
+  ylab = "PM₂.₅ (µg/m³)",
+  xlab = ""
   )
   )
-## Plot the avoidable variable in green
+# Add x-axis label
+mtext("Sydney - Nov 2002 to Apr 2003", side = 3, line = -3, outer = TRUE)
+
+# Create treshold polygon
+polygon_x <- c(qc4$date, rev(qc4$date))
+polygon_y <- c(qc4$cf, rev(qc4$cf + qc4$threshold))
+
+polygon(polygon_x, polygon_y, col = col2, border = NA)
+
+# Create cf polygon 
+polygon_x <- c(qc4$date, rev(qc4$date))
+polygon_y <- c(qc4$cf, rep(0, length(qc4$cf)))
+
+polygon(polygon_x, polygon_y, col = col1, border = NA)
+
+
+## Plot the avoidable variable
 with(qc4, points(
   date,
   avoidable,
   pch = 20,
-  col = 'green')
+  col = col3)
 )
 
-## cf line
-with(qc4, lines(
+## Plot the good variable
+with(qc4, points(
   date,
-  seasonal + trend,
-  lwd = 2)
-  )
+  good,
+  pch = 20,
+  col = "forestgreen")
+)
 
-## extreme smoke days treshold
-lines(qc$date,
-      qc$seasonal + qc$trend + threshold,
-      col = 'blue')
+## Plot the extreme
+with(qc4, points(
+  date,
+  terrible,
+  pch = 20,
+  col = "red")
+)
+
+# ## cf line
+# with(qc4, lines(
+#   date,
+#   cf,
+#   lwd = 1,
+#   col = col2)
+#   )
+# 
+# ## extreme smoke days treshold
+# lines(qc4$date,
+#       qc4$cf + qc4$threshold,
+#       lwd = 1,
+#       col = col2)
 
 ## extreme smoke events line
-with(qc[
-  qc$extreme_smoke_day == 1,],
+with(qc4[
+  qc4$extreme_smoke_day == 1,],
   segments(
     date,
-    seasonal + trend + remainder,
+    cf + remainder,
     date,
-    seasonal + trend,
+    cf,
+    lwd = 2,
     col = 'red')
   )
+
+## Adding the legend
+legend(par("usr")[2]-20, par("usr")[4], bty = "n", xpd = NA,
+       c("Extreme", "Avoidable", "CF"),
+       col = c("red", "darkred", "forestgreen"),
+       pch = 20)
 
 }

@@ -144,6 +144,7 @@ list(
   )
   ,
   ### OUTPUTS ####
+  ### TABLES ####
   #### tab_mortality ####
   tar_target(
     tab_mortality,
@@ -202,6 +203,24 @@ list(
     )
   )
   ,
+  #### tab_rr ####
+  tar_target(
+    tab_rr,
+    do_tab_rr(
+      calc_rr
+    )
+  )
+  ,
+  #### tab_rr_sens ####
+  tar_target(
+    tab_rr_sens,
+    do_tab_rr_sens(
+      calc_rr_sens
+    )
+  )
+  ,
+  
+  ### FIGURES ####
   #### plot_mortality_gcc ####
   tar_target(
     plot_mortality_gcc,
@@ -218,7 +237,7 @@ list(
     )
   )
   ,
-  #### plot_pm25_gccs ####
+  #### plot_pm25_nepm ####
   tar_target(
     plot_pm25_nepm,
     do_plot_pm25_nepm(

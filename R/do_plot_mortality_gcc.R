@@ -2,7 +2,7 @@ do_plot_mortality_gcc <- function(
     sim_obs
 ){
   # png("figures_and_tables/fig_mortality.png", res = 250, height = 3840, width = 2160)
-  pdf("figures_and_tables/fig_mortality_doy.pdf", width = 9.5, height = 16.889)
+  pdf("figures_and_tables/figS2_mortality.pdf", width = 8.3, height = 11.7)
   
   # sim_obs=dat_mort_aihw_simulated_2020
   
@@ -39,7 +39,7 @@ do_plot_mortality_gcc <- function(
   
   
   par(mfrow = c(length(gccs), 1),
-      mar = c(0.2, 2, 0.2, 0.2),
+      mar = c(0.4, 2, 0.4, 0.2), # c(bottom, left, top, right)
       mgp = c(2.5, 1, 0),
       oma = c(4, 4, 0, 0),
       las = 1,
@@ -54,23 +54,40 @@ do_plot_mortality_gcc <- function(
     
     dat <- get(gcc)
     
-    if (i == length(gccs)) {
-      ## last plot ##   
-      plot(avg_doy_all ~ doy, dat, pch = 19, col = grey(0.8), cex = 0.5,
-           ylab = "Daily deaths", xlab = "Day of the year", main = "")
-      
-      title(title_text, adj = 0.99, line = -1.5)
-      
-      lines(1:366, tapply(dat$avg_doy_all, dat$doy, mean), lwd = 1.5, col = 4)
-    } else {
-      plot(avg_doy_all ~ doy, dat, xaxt = "n", pch = 19, col = grey(0.8), cex = 0.5)
-      
-      title(title_text, adj = 0.99, line = -1.5)
-      
-      lines(1:366, tapply(dat$avg_doy_all, dat$doy, mean), lwd = 1.5, col = 4)
+    if (i == 1) 
+      {
+      ## first plot ##
+      plot(avg_doy_all ~ doy, dat, pch = 20, col = grey(0.8), cex = 0.5,
+           ylab = "", xlab = "", main = "",
+           yaxs = "i", xaxs = "i", yaxt = "n", xaxt = "n")
+      axis(2, at = c(1, seq(20, max(dat$avg_doy_all, na.rm = TRUE), by = 20)), 
+           las = 1)
     }
+    else if
+    (i == length(gccs)) 
+      {
+      ## last plot ##   
+      plot(avg_doy_all ~ doy, dat, pch = 20, col = grey(0.8), cex = 0.5,
+           ylab = "Daily deaths", xlab = "Day of the year", main = "",
+           yaxs = "i", xaxs = "i")
+      } 
+    else 
+      {
+      plot(avg_doy_all ~ doy, dat, xaxt = "n", pch = 20, col = grey(0.8), 
+           cex = 0.5, yaxs = "i", xaxs = "i")
+      }
+
     # Add horizontal and vertical grid lines
     grid(nx = NULL, ny = NULL, lty = "dashed", col = "grey")
+    
+    # Add title over grid lines
+    title(title_text, adj = 0.99, line = -1.5)
+    
+    # Add lines
+    lines(1:366, tapply(dat$avg_doy_all, dat$doy, mean), lwd = 1.5, col = 4)
+    
+    # Add a box around the plot
+    box(col = "black", lwd = 1)
     
     ## add x legend
     mtext("Day of the Year", side = 1, line = 2, outer = TRUE)

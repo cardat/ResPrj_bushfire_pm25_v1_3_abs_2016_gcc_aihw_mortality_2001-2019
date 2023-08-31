@@ -5,11 +5,11 @@ do_plot_an_all_ages <- function(
 ){
   # png("figures_and_tables/fig_an_100_sens.png", res = 250, height = 1080, width = 1920)
 
-  pdf("figures_and_tables/fig_an_95_sens.pdf", width = 16.889 , height = 9.5)
+  pdf("figures_and_tables/fig3_an.pdf", width = 11.7 , height = 8.3)
   
   
   par(
-    family = "Calibri",
+    family = "Arial Narrow",
     mar = c(2, 4, 1, 1),
     mgp = c(3, 1, 0),
     oma = c(0, 0, 0, 0),
@@ -40,7 +40,7 @@ do_plot_an_all_ages <- function(
   plot(an_all_ages_dt$year, an_all_ages_dt$rr, type = "l", col = "red",
        xlab = "Year", ylab = "Deaths", main = "",
        xlim = range(an_all_ages_dt$year), ylim = c(0, max(an_all_ages_dt$ub, an_all_ages_sens$ub, na.rm = TRUE)),
-       xaxt = "n")
+       xaxt = "n", yaxs = "i", xaxs = "i")
   
   # Add shaded area for LB and UB for an_all_ages_dt
   polygon(c(an_all_ages_dt$year, rev(an_all_ages_dt$year)), c(an_all_ages_dt$lb, rev(an_all_ages_dt$ub)),
