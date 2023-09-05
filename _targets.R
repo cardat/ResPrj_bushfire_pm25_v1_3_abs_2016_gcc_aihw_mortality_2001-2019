@@ -245,6 +245,14 @@ list(
     )
   )
   ,
+  #### plot_5th ####
+  tar_target(
+    plot_5th,
+    do_plot_5th(
+      mrg_mort_pm25
+    )
+  )
+  ,
   #### plot_pm25_gccs ####
   tar_target(
     plot_pm25_gccs,

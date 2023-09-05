@@ -59,8 +59,9 @@ do_plot_mortality_gcc <- function(
       ## first plot ##
       plot(avg_doy_all ~ doy, dat, pch = 20, col = grey(0.8), cex = 0.5,
            ylab = "", xlab = "", main = "",
-           yaxs = "i", xaxs = "i", yaxt = "n", xaxt = "n")
-      axis(2, at = c(1, seq(20, max(dat$avg_doy_all, na.rm = TRUE), by = 20)), 
+           yaxs = "i", xaxs = "i", yaxt = "n", xaxt = "n",
+           ylim = c(0, max(dat$avg_doy_all, na.rm = TRUE)))
+      axis(2, at = c(0, seq(20, max(dat$avg_doy_all, na.rm = TRUE), by = 20)), 
            las = 1)
     }
     else if
