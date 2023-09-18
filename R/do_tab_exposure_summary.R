@@ -20,7 +20,8 @@ summary_stats_by_gcc <- pm25[, .(Min = round(min(pm25_pred), 2),
                                  `95th percentile` = round(quantile(pm25_pred, 0.95), 2),
                                  Max = round(max(pm25_pred), 2),
                                  `Days > 25μg/m3` = sum(pm25_pred > 25),
-                                 `Days > 20μg/m3` = sum(pm25_pred > 20)),
+                                 `Days > 20μg/m3` = sum(pm25_pred > 20),
+                                 `Days > 15μg/m3` = sum(pm25_pred > 15)),
                              by = gcc_code16][order(gcc_code16)]
 
 # Add the city names to the result
@@ -40,7 +41,8 @@ summary_stats_by_gcc <- summary_stats_by_gcc[, c(
   "95th percentile",
   "Max",
   "Days > 25μg/m3",
-  "Days > 20μg/m3"
+  "Days > 20μg/m3",
+  "Days > 15μg/m3"
   )]
 
 # Print the result

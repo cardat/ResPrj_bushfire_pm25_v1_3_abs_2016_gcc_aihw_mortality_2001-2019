@@ -9,7 +9,7 @@ dly_all_gcc: "GCC_daily_deaths_allcause_derived.csv"
 
 ## out dirs ##
 outdir_pm25: "C:/Users/291828h/OneDrive - Curtin/projects/ResPrj_bushfire_pm25_v1_3_abs_2016_gcc_aihw_mortality_2001-2019/data_derived/bushfire_pm25_2001-2019_abs_2016"
-outdat_pm25: "bushfire_pm25_2002-2020_stl.rds"
+outdat_pm25: "bushfire_pm25_2001-2020_stl.rds"
 
 ## out dir derived ##
 outdir: "C:/Users/291828h/OneDrive - Curtin/projects/ResPrj_bushfire_pm25_v1_3_abs_2016_gcc_aihw_mortality_2001-2019/data_derived"

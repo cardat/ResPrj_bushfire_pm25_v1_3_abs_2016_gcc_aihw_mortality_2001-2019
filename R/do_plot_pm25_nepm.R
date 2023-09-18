@@ -6,14 +6,13 @@ do_plot_pm25_nepm <- function(
     
 ){
   # png("figures_and_tables/fig_pm25_nepm.png", res = 250, height = 3840, width = 2160)
-  
-  pdf("figures_and_tables/fig_pm25_nepm.pdf", width = 8.3, height = 11.7)
-  
-  # Set the font to Cambria
-  par(family = "Arial Narrow")
-  
   # Sample data preparation
   # pm25 = mrg_mort_pm25
+  
+  # Define font mappings
+  pdf("manuscript/01_figures/fig_pm25.pdf", width = 8.3, height = 11.7)
+
+  par(family = "Arial Narrow")
   
   # Filtering based on gcc values
   syd <- pm25[gcc == "1GSYD"]
@@ -88,20 +87,20 @@ do_plot_pm25_nepm <- function(
     abline(v = as.numeric(years), col = "lightgray", lty = "dotted")
     
     # First, draw the #CCCC99 segments
-    segments(as.numeric(pm25$date[pm25$pm25_pred <= 25]), 
+    segments(as.numeric(pm25$date[pm25$pm25_pred <= 15]), 
              0, 
-             as.numeric(pm25$date[pm25$pm25_pred <= 25]), 
-             pm25$pm25_pred[pm25$pm25_pred <= 25], 
-             col = "#CCCC99", 
+             as.numeric(pm25$date[pm25$pm25_pred <= 15]), 
+             pm25$pm25_pred[pm25$pm25_pred <= 15], 
+             col = "grey", 
              lwd = 1)
     
-    lines(as.numeric(pm25$date), pm25$cf, col = "#3399FF", lwd = 1.5)
+    lines(as.numeric(pm25$date), pm25$cf, col = "dimgrey", lwd = 1.5)
     
     # Second, draw the red segments
-    segments(as.numeric(pm25$date[pm25$pm25_pred > 25]), 
+    segments(as.numeric(pm25$date[pm25$pm25_pred > 15]), 
              0, 
-             as.numeric(pm25$date[pm25$pm25_pred > 25]), 
-             pm25$pm25_pred[pm25$pm25_pred > 25], 
+             as.numeric(pm25$date[pm25$pm25_pred > 15]), 
+             pm25$pm25_pred[pm25$pm25_pred > 15], 
              col = "red", 
              lwd = 1)
     
@@ -109,10 +108,13 @@ do_plot_pm25_nepm <- function(
     
     # NEPM lines
     # For the forestgreen line with solid line type
-    abline(h = 20, col = "forestgreen", lty = 2, lwd = 1.5)
+    abline(h = 20, col = "darkorange", lty = 2, lwd = 1)
     
     # For the black line with dashed line type
-    abline(h = 25, col = "black", lty = 2, lwd = 1.5)
+    abline(h = 25, col = "black", lty = 2, lwd = 1)
+    
+    # For the black line with dashed line type
+    abline(h = 15, col = "#3399FF", lty = 2, lwd = 1)
     
      # Add a box around the plot
     box(col = "black", lwd = 1)
@@ -125,15 +127,24 @@ do_plot_pm25_nepm <- function(
   # Legend plot
   plot(0, 0, type = 'n', xaxt = 'n', yaxt = 'n', xlab = '', ylab = '', bty = 'n', frame.plot=FALSE)
   legend(x = -1.1, y = 0.8, 
-         legend = c("PM₂.₅", "Background PM₂.₅", "PM₂.₅ > NEPM 2023", "NEPM 2023", "NEPM 2025"), 
-         col = c("#CCCC99", "#3399FF", "red", "black", "forestgreen"), 
-         lty = c(1, 1, 1, 2, 2),
+         legend = c("Estimated Daily PM₂.₅ Average Concentration ", 
+                    "Background PM₂.₅", 
+                    "Days where PM₂.₅ estimations are higher than WHO AQG target",
+                    "2021 World Health Organization (WHO) Global air quality guidelines (AQG)",
+                    "2015 Australian National Environment Protection (Ambient Air Quality) Measure (NEPM)", 
+                    "2025 Australian National Environment Protection (Ambient Air Quality) Measure (NEPM)" 
+                    ), 
+         col = c("grey", 
+                 "dimgrey", 
+                 "red",
+                 "#3399FF",
+                 "black",
+                 "darkorange" 
+                 ), 
+         lty = c(1, 1, 1, 2, 2, 2),
          lwd = 1.5, 
          cex = 1.2, 
-         bty = 'n', 
-         horiz = TRUE)
-  
-  
+         bty = 'n')
   dev.off()
 }
 
