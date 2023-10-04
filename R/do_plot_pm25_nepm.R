@@ -68,7 +68,7 @@ do_plot_pm25_nepm <- function(
     
     # Define xlim and ylim
     xlim_range <- c(as.numeric(as.Date("2001-01-01")), as.numeric(as.Date("2020-12-31")))
-    ylim_range <- c(0, max(pm25$pm25_pred, na.rm = TRUE))
+    ylim_range <- c(0, 100)
     
     plot(0, type = "n", xlim = xlim_range, ylim = ylim_range, 
          xaxt = "n", ylab = "", xlab = "", main = "", yaxs = "i", xaxs = "i")
@@ -106,8 +106,44 @@ do_plot_pm25_nepm <- function(
     
     title(title_text, adj = 0.99, line = -1.5)
     
-    # NEPM lines
-    # For the forestgreen line with solid line type
+    # Add text for pm25_pred values > 100
+    high_pm25 <- pm25[pm25$pm25_pred > 100, ]
+    
+    # Sort the data frame by date
+    high_pm25 <- high_pm25[order(as.Date(high_pm25$date)), ]
+    
+    high_pm25$group <- cumsum(c(1, diff(as.Date(high_pm25$date)) > 7))
+    
+    # Get the highest pm25_pred value within each group for gcc == "8ACTE"
+    highest_8ACTE <- high_pm25[gcc == "8ACTE", .SD[which.max(pm25_pred)], by = group][, group := NULL]
+    
+    # Update the original high_pm25 data table
+    high_pm25 <- high_pm25[!gcc == "8ACTE"][, group := NULL]
+    
+    high <- rbind(highest_8ACTE, high_pm25)
+    
+    if (nrow(high) > 0) {
+      # Calculate the width of the text
+      widths <- strwidth(sprintf("%.1f", high$pm25_pred)) * 0.7
+      
+      # Draw semi-transparent rectangles behind the text
+      rect(xleft = as.numeric(high$date) - widths / 2, 
+           ybottom = rep(70, nrow(high)) - 4, 
+           xright = as.numeric(high$date) + widths / 2, 
+           ytop = rep(70, nrow(high)) + 4, 
+           col = adjustcolor("black", alpha.f = 0.5), 
+           border = NA)
+      
+      # Draw text on top of the rectangles
+      text(x = as.numeric(high$date), 
+           y = rep(70, nrow(high)), 
+           labels = as.character(round(high$pm25_pred)), 
+           cex = 0.7, 
+           col = "white")
+    }
+    
+    
+    # NEPM WHO lines
     abline(h = 20, col = "darkorange", lty = 2, lwd = 1)
     
     # For the black line with dashed line type
@@ -124,6 +160,8 @@ do_plot_pm25_nepm <- function(
       text(par("usr")[1]-400, mean_point, labels = "PM₂.₅ (µg/m³)", xpd = TRUE, srt = 90, cex = 1.8)  
     }
   }
+  
+  
   # Legend plot
   plot(0, 0, type = 'n', xaxt = 'n', yaxt = 'n', xlab = '', ylab = '', bty = 'n', frame.plot=FALSE)
   legend(x = -1.1, y = 0.8, 
