@@ -13,7 +13,9 @@ do_calc_rr_sens <- function(
     threshold = 0.95
 ){
   ## Relative risk per 10 pm2.5 unit change (10 μg/m3)
-  hrapie = c(1.0123, 1.0045, 1.0201)  # RR, LB, UP respectively
+  # Orellano 2020  c(1.0065, 1.0044, 1.0086)
+  # hrapie = c(1.0123, 1.0045, 1.0201)  # RR, LB, UP respectively
+  hrapie = c(1.0065, 1.0044, 1.0086)
   unit_change <- 10
   
   # Calculate the beta values for each component of hrapie

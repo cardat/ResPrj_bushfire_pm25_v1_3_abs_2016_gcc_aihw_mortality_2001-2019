@@ -7,7 +7,7 @@ do_plot_pm25_gccs <- function(
   layout(matrix(c(1, 2, 3, 4, 5, 6, 7, 8, 9), nrow = 3, byrow = TRUE))
   
   par(
-    family = "Cambria",
+    family = "Arial Narrow",
     mar = c(2, 4, 1, 1),
     mgp = c(3, 1, 0),
     oma = c(0, 0, 0, 8),

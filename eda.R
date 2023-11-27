@@ -1,8 +1,100 @@
 
-
+library(targets)
+library(data.table)
 ## QC BushfireSmoke 1.3v vs DEEPER pm2.5
 tar_load(mrg_mort_pm25)
+#### hack by ivan ####
+foo=mrg_mort_pm25
 
+foo2 <- foo[gcc == "7GDAR"]
+names(foo2)
+
+
+png("figures_and_tables/fig_exceptional_explain.png", res = 250, height = 3000, width = 3840)
+par(mfrow = c(4,1), mar = c(5, 5, 4, 2) + 0.1)
+
+myPlot <- function(
+    foo2 = foo[gcc == "7GDAR"],
+    idx = as.Date("2002-01-01"): as.Date("2002-12-31"),
+    pctile = quantile(foo2$pm25_pred, 0.95)
+){
+  with(foo2[date %in% idx], {
+    plot(date, pm25_pred, pch = 16, cex = 0.6, 
+         ylab = expression("PM"[2.5] * " μg/m" ^ 3)) # Y-axis label
+    lines(date, trend + seasonal, col = 'green')
+    with(subset(foo2, pm25_pred > pctile), segments(date, trend + seasonal, date, 
+                                                    trend + seasonal + remainder,
+                                                    col = 'red'))
+  })
+}
+
+#### build up three panels ####
+par(mfrow = c(1,1), mar = c(5, 5, 4, 2) + 0.1)
+idx = as.Date("2002-01-01"): as.Date("2002-12-31")
+foo2 = foo[gcc == "7GDAR"]
+
+pm <- foo2$pm25_pred
+top_5pct_threshold <- quantile(pm, 0.95)
+
+myPlot(
+  foo2 = foo2,
+  idx = idx,
+       pctile = quantile(foo2$pm25_pred, 0.95)
+  )
+abline(top_5pct_threshold, 0)
+title(main = expression("PM"[2.5] * " Concentrations in Darwin 2002"))
+
+with(foo2[pm25_pred > top_5pct_threshold], 
+     segments(date, trend + seasonal, date, pm25_pred, col = 'red'))
+
+with(foo2[pm25_pred <= top_5pct_threshold & pm25_pred > trend + seasonal], 
+     segments(date, trend + seasonal, date, pm25_pred, col = 'darkgrey'))
+# Adding a legend
+legend("topright", # Position of the legend
+       legend = c("Most Extreme Days (top 5%)", 
+                  expression("Exceptional PM"[2.5]), 
+                  "Expected Concentrations (seasonal + trend)", 
+                  expression("Estimated PM"[2.5])),
+       col = c("red", "darkgrey", "green", "black"),
+       lty = c(1, 1, 1, NA), # Line types (NA for points)
+       pch = c(NA, NA, -1, 16), # Point types (-1 for lines, 16 for points)
+       bty = "o", # No box around the legend
+       text.col = "black")
+
+
+dev.off()
+
+
+
+
+
+
+
+
+
+
+with(foo2[date %in% idx & pm25_pred < top_5pct_threshold], 
+     plot(date, pm25_pred, ylim = c(0,27), pch = 16, cex = 0.6))
+title("Sensitivity analysis")
+abline(top_5pct_threshold, 0)
+with(foo2[date %in% idx], lines(date, trend + seasonal, col = 'green'))
+# with(foo2[date %in% idx & pm25_pred > top_5pct_threshold], segments(date, trend + seasonal, date, 
+#                                                         trend + seasonal + remainder,
+#                                                         col = 'red'))
+with(foo2[date %in% idx & (pm25_pred < top_5pct_threshold 
+                           & pm25_pred > trend + seasonal)],
+     segments(date, trend + seasonal, date, 
+              trend + seasonal + remainder,
+              col = 'darkgrey'))
+
+
+# 
+# plot(density(exceptional_pm),xlim = c(0,50))
+# 0.05 * length(foo2$date)
+# 
+# foo2[1,]
+dev.off()
+#### old work ####
 # load deeper
 pm25_dp <- readRDS("C:/Users/291828H/OneDrive - Curtin/projects/SURE_STANDARD_STAGING/Project_Exposures_Staging/heat_parkland_ozone/data_derived_by_geo/yearly_pm25_pm10_no2_by_ppn.rds")
 
