@@ -12,7 +12,7 @@ do_plot_pm25_nepm <- function(
   # Define font mappings
   pdf("manuscript/01_figures/fig_pm25.pdf", width = 8.3, height = 11.7)
 
-  par(family = "Arial Narrow")
+  # par(family = "Arial Narrow")
   
   # Filtering based on gcc values
   syd <- pm25[gcc == "1GSYD"]
@@ -157,7 +157,7 @@ do_plot_pm25_nepm <- function(
     
     if (i == 4) {
       mean_point <- mean(par("usr")[3:4])
-      text(par("usr")[1]-400, mean_point, labels = "PM₂.₅ (µg/m³)", xpd = TRUE, srt = 90, cex = 1.8)  
+      text(par("usr")[1]-400, mean_point, labels = expression("PM"[2.5] * " μg/m" ^ 3), xpd = TRUE, srt = 90, cex = 1.8)  
     }
   }
   
@@ -165,12 +165,12 @@ do_plot_pm25_nepm <- function(
   # Legend plot
   plot(0, 0, type = 'n', xaxt = 'n', yaxt = 'n', xlab = '', ylab = '', bty = 'n', frame.plot=FALSE)
   legend(x = -1.1, y = 0.8, 
-         legend = c("Estimated Daily PM₂.₅ Average Concentration ", 
-                    "Background PM₂.₅", 
-                    "Days where PM₂.₅ estimations are higher than WHO AQG target",
-                    "2021 World Health Organization (WHO) Global air quality guidelines (AQG)",
-                    "2015 Australian National Environment Protection (Ambient Air Quality) Measure (NEPM)", 
-                    "2025 Australian National Environment Protection (Ambient Air Quality) Measure (NEPM)" 
+         legend =c(expression("Estimated Daily" ~ PM[2.5] ~ "Average Concentration"), 
+                   expression("Background" ~ PM[2.5]), 
+                   expression("Days where" ~ PM[2.5] ~ "estimations are higher than WHO AQG target"),
+                   "2021 World Health Organization (WHO) Global air quality guidelines (AQG)",
+                   "2015 Australian National Environment Protection (Ambient Air Quality) Measure (NEPM)", 
+                   "2025 Australian National Environment Protection (Ambient Air Quality) Measure (NEPM)" 
                     ), 
          col = c("grey", 
                  "dimgrey", 

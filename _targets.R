@@ -143,6 +143,42 @@ list(
     )
   )
   ,
+  ### NON-EXCEPTIONAL DAYS DEATHS ####
+  #### calc_rr ####
+  tar_target(
+    calc_rr1,
+    do_calc_rr1(
+      mrg_mort_pm25,
+      ## Define the percentile. 1.00 = whole sample
+      threshold = 1.00
+    )
+  )
+  ,
+  #### calc_paf1 ####
+  tar_target(
+    calc_paf1,
+    do_calc_paf1(
+      calc_rr1
+    )
+  )
+  ,
+  #### calc_an_all_ages1 ####
+  tar_target(
+    calc_an_all_ages1,
+    do_calc_an_all_ages1(
+      calc_paf1,
+      mrg_mort_pm25
+    )
+  )
+  ,
+  #### calc_an_all_ages_sum1 ####
+  tar_target(
+    calc_an_all_ages_sum1,
+    do_calc_an_all_ages_sum1(
+      calc_an_all_ages1
+    )
+  )
+  ,
   ### OUTPUTS ####
   ### TABLES ####
   #### tab_mortality ####
@@ -185,6 +221,14 @@ list(
     )
   )
   ,
+  #### tab_an1 ####
+  tar_target(
+    tab_an1,
+    do_tab_an1(
+      calc_an_all_ages_sum1
+    )
+  )
+  ,
   #### tab_scale ####
   tar_target(
     tab_scale,
@@ -199,6 +243,15 @@ list(
     tab_scale_sens,
     do_tab_scale_sens(
       calc_an_all_ages_sens_sum,
+      mrg_mort_pm25
+    )
+  )
+  ,
+  #### tab_scale1 ####
+  tar_target(
+    tab_scale1,
+    do_tab_scale1(
+      calc_an_all_ages_sum1,
       mrg_mort_pm25
     )
   )
@@ -219,7 +272,14 @@ list(
     )
   )
   ,
-  
+  #### tab_rr1 ####
+  tar_target(
+    tab_rr1,
+    do_tab_rr1(
+      calc_rr1
+    )
+  )
+  ,
   ### FIGURES ####
   #### plot_mortality_gcc ####
   tar_target(
@@ -278,6 +338,15 @@ list(
     do_plot_an_all_ages(
       calc_an_all_ages,
       calc_an_all_ages_sens,
+      calc_an_all_ages1,
+      mrg_mort_pm25
+    )
+  )
+  ,
+  #### plot_oneyear ####
+  tar_target(
+    plot_oneyear,
+    do_plot_oneyear(
       mrg_mort_pm25
     )
   )

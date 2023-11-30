@@ -9,7 +9,7 @@ do_plot_mortality_gcc <- function(
   # Remove data for December 2019
   sim_obs <- sim_obs[!(format(sim_obs$date, "%Y-%m") == "2019-12")]
   
-  par(family = "Arial Narrow")
+  # par(family = "Arial Narrow")
   
   syd <- sim_obs[gcc == "1GSYD"]
   mel <- sim_obs[gcc == "2GMEL"]
