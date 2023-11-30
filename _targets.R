@@ -347,7 +347,12 @@ list(
   tar_target(
     plot_oneyear,
     do_plot_oneyear(
-      mrg_mort_pm25
+      mrg_mort_pm25,
+      idx = as.Date("2002-01-01"): as.Date("2002-12-31"),
+      pct = 0.95,
+      city = "7GDAR",
+      city_name = "Darwin", #for the plot's title
+      year = "(2002)" #for the plot's title
     )
   )
   # ,
